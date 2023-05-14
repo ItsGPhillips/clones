@@ -1,0 +1,16 @@
+{
+  "name": "youtube--icons",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/youtube/icons/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/youtube/icons/**/*.{ts,tsx,js,jsx}"]
+      }
+    }
+  }
+}

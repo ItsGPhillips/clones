@@ -1,0 +1,23 @@
+import { ComponentPropsWithRef, forwardRef } from 'react';
+
+export type LibraryIconProps = Omit<
+   ComponentPropsWithRef<'svg'>,
+   'viewBox'
+>;
+
+export const LibraryIcon = forwardRef<
+   SVGSVGElement,
+   LibraryIconProps
+>((props, ref) => {
+   return (
+      <svg
+         ref={ref}
+         viewBox="0 0 24 24"
+         {...props}
+      >
+         <path
+            d="M11 7l6 3.5-6 3.5V7zm7 13H4V6H3v15h15v-1zm3-2H6V3h15v15zM7 17h13V4H7v13z"
+         />
+      </svg>
+   );
+});

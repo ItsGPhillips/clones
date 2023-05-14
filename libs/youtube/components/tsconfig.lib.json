@@ -1,0 +1,31 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/out-tsc",
+    "types": [
+      "node"
+    ]
+  },
+  "files": [
+    "../../../node_modules/@nx/react/typings/cssmodule.d.ts",
+    "../../../node_modules/@nx/react/typings/image.d.ts"
+  ],
+  "exclude": [
+    "jest.config.ts",
+    "lib/**/*.spec.ts",
+    "lib/**/*.test.ts",
+    "lib/**/*.spec.tsx",
+    "lib/**/*.test.tsx",
+    "lib/**/*.spec.js",
+    "lib/**/*.test.js",
+    "lib/**/*.spec.jsx",
+    "lib/**/*.test.jsx",
+    "node_modules"
+  ],
+  "include": [
+    "lib/**/*.js",
+    "lib/**/*.jsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx"
+  ]
+}

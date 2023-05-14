@@ -8,6 +8,7 @@
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
+      "postcssConfig": "apps/youtube/postcss.config.js",
       "options": {
         "root": "apps/youtube",
         "outputPath": "dist/apps/youtube"
@@ -22,6 +23,7 @@
     "serve": {
       "executor": "@nx/next:server",
       "defaultConfiguration": "development",
+      "postcssConfig": "apps/youtube/postcss.config.js",
       "options": {
         "buildTarget": "youtube:build",
         "dev": true
@@ -39,6 +41,7 @@
     },
     "export": {
       "executor": "@nx/next:export",
+      "postcssConfig": "apps/youtube/postcss.config.js",
       "options": {
         "buildTarget": "youtube:build:production"
       }
@@ -46,6 +49,7 @@
     "test": {
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "postcssConfig": "apps/youtube/postcss.config.js",
       "options": {
         "jestConfig": "apps/youtube/jest.config.ts",
         "passWithNoTests": true
@@ -60,6 +64,7 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "outputs": ["{options.outputFile}"],
+      "postcssConfig": "apps/youtube/postcss.config.js",
       "options": {
         "lintFilePatterns": ["apps/youtube/**/*.{ts,tsx,js,jsx}"]
       }

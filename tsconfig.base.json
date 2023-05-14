@@ -2,6 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
+    "jsx": "react",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
@@ -13,8 +14,15 @@
     "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@shared/*": ["libs/shared/src/*"],
+      "@youtube/components/*": ["libs/youtube/components/src/*"],
+      "@youtube/icons/*": ["libs/youtube/icons/src/lib/*"],
+      "@youtube/app/*": ["apps/youtube/src/*"]
+    }
   },
+  "include": ["**/*.ts", "**/*.tsx", "**/**/*.ts", "**/**/*.tsx"],
   "exclude": ["node_modules", "tmp"]
 }

@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+   .hover-link {
+      @apply bg-transparent transition-opacity hover:bg-neutral-800 [&>*]:fill-white rounded-full;
+   }
+}

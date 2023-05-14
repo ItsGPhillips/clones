@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "composite": true,
+    "declaration": true,
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./../icons/tsconfig.json"
+    },
+    {
+      "path": "./../../shared/tsconfig.json"
+    }
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/**/*.ts",
+    "**/**/*.tsx"
+  ],
+  "extends": "../../../tsconfig.base.json"
+}

@@ -16,9 +16,24 @@
         "name": "next"
       }
     ],
-    "types": ["jest", "node"]
+    "types": [
+      "jest",
+      "node"
+    ],
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", "next-env.d.ts"],
+  "references": [
+    { "path": "../../libs/shared/tsconfig.json"},
+    { "path": "../../libs/youtube/components/tsconfig.json"},
+    { "path": "../../libs/youtube/icons/tsconfig.json"},
+  ],
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.js",
+    "**/*.jsx",
+    "next-env.d.ts",
+    "../../apps/youtube/.next/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "jest.config.ts",
