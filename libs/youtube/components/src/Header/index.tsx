@@ -4,14 +4,15 @@ import * as Tooltip from "@shared/components/Tooltip";
 import { HoverButton } from "@youtube/components/HoverButton";
 import { YoutubeLogo } from "@youtube/icons/YoutubeLogo";
 import { CreateIcon } from "@youtube/icons/CreateIcon";
-import { HeaderSearchInput } from "./HeaderSearchInput";
+import { HeaderSearchInput } from "../HeaderSearchInput";
 import { AiOutlineBell } from "react-icons/ai";
-import { Avatar } from "./Avatar";
-import { SideBarTrigger } from "./SidebarTrigger";
+import { Avatar } from "../Avatar";
+import { SideBarTrigger } from "../SidebarTrigger";
+import { Background } from "./Background";
 
 export const Header = (props: { contryCode: string; }) => {
    return (
-      <header className="sticky top-0 isolate z-30 flex h-[3.4rem] flex-row items-stretch justify-between border-b-2 border-b-neutral-900 px-8">
+      <Background>
          {/* Left Side */}
          <div className="isolate flex flex-row items-center">
             <SideBarTrigger />
@@ -45,6 +46,6 @@ export const Header = (props: { contryCode: string; }) => {
             </Tooltip.Root>
             <Avatar firstName="George" lastName="Phillips" imageUrl={null} />
          </div>
-      </header>
+      </Background>
    );
 };

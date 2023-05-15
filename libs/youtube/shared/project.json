@@ -1,0 +1,26 @@
+{
+   "name": "youtube--shared",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/youtube/shared/src",
+   "projectType": "library",
+   "targets": {
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/youtube/shared",
+            "main": "libs/youtube/shared/src/index.ts",
+            "tsConfig": "libs/youtube/shared/tsconfig.lib.json",
+            "assets": ["libs/youtube/shared/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/youtube/shared/**/*.ts"]
+         }
+      }
+   },
+   "tags": []
+}

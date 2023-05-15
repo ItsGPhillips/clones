@@ -22,9 +22,15 @@
     ],
   },
   "references": [
-    { "path": "../../libs/shared/tsconfig.json"},
-    { "path": "../../libs/youtube/components/tsconfig.json"},
-    { "path": "../../libs/youtube/icons/tsconfig.json"},
+    {
+      "path": "../../libs/shared/tsconfig.json"
+    },
+    {
+      "path": "../../libs/youtube/components/tsconfig.json"
+    },
+    {
+      "path": "../../libs/youtube/icons/tsconfig.json"
+    },
   ],
   "include": [
     "**/*.ts",
@@ -32,7 +38,8 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
-    "../../apps/youtube/.next/types/**/*.ts"
+    "../../apps/youtube/.next/types/**/*.ts",
+    "tailwind.config.js",
   ],
   "exclude": [
     "node_modules",

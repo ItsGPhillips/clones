@@ -2,13 +2,13 @@ import './global.css';
 import { headers as Headers } from 'next/headers';
 import { cn } from '@shared/utils/cn';
 import * as Tooltip from '@shared/components/Tooltip';
-import { Roboto } from 'next/font/google';
 import { env } from "@youtube/app/env";
 import { use } from 'react';
 import { Header } from '@youtube/components/Header';
 
 import "pretty-console-colors"
 
+import { Roboto } from 'next/font/google';
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', "100", "300", "700"] });
 
 export const metadata = {
@@ -43,7 +43,7 @@ export default function RootLayout({
       <html lang="en">
          <body
             className={cn(
-               'bg-dark-800 relative min-h-screen text-white',
+               'bg-dark-800 relative min-h-screen text-white isolate z-0',
                roboto.className
             )}
          >

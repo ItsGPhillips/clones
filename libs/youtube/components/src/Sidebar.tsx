@@ -78,9 +78,9 @@ const FOOTER_LINKS = {
 export const Sidebar: React.FC = () => {
    return (
       <>
-         <div className="-ml-4 h-14 flex items-center justify-center">
+         {/* <div className="-ml-4 h-14 flex items-center justify-center">
             <YoutubeLogo contryCode={"GB"} />
-         </div>
+         </div> */}
          <ScrollArea.Root className="relative w-full h-full overflow-hidden pr-4" scrollHideDelay={0.1}>
             <ScrollArea.Viewport className="w-full h-full">
                <Group>

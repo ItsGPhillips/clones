@@ -54,7 +54,7 @@ export const Content: React.FC<Omit<
             <RadixToolip.Content {...props} asChild>
                <div
                   className={cn(
-                     "mt-3 rounded-md bg-neutral-500 p-2 text-xs",
+                     "relative z-[9999] mt-3 rounded-md bg-neutral-500 p-2 text-xs",
                      "animate-in fade-in-10"
                   )}
                >
