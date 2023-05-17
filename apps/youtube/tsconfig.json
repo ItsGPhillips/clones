@@ -40,7 +40,8 @@
     "next-env.d.ts",
     "./.next/types/**/*.ts",
     "tailwind.config.js",
-    "../../apps/youtube/.next/types/**/*.ts"
+    "../../apps/youtube/.next/types/**/*.ts",
+    "../../dist/apps/youtube/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
