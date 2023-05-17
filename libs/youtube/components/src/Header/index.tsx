@@ -4,7 +4,7 @@ import * as Tooltip from "@shared/components/Tooltip";
 import { HoverButton } from "@youtube/components/HoverButton";
 import { YoutubeLogo } from "@youtube/icons/YoutubeLogo";
 import { CreateIcon } from "@youtube/icons/CreateIcon";
-import { HeaderSearchInput } from "../HeaderSearchInput";
+import { HeaderSearchInput } from "./HeaderSearchInput";
 import { AiOutlineBell } from "react-icons/ai";
 import { Avatar } from "../Avatar";
 import { SideBarTrigger } from "../SidebarTrigger";

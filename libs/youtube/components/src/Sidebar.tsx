@@ -51,7 +51,7 @@ const Group: React.FC<PropsWithChildren<{ title?: string; }>> = (props) => {
 import {faker} from "@faker-js/faker"
 const TMP_SUBSCRIPTIONS = Array(14).fill(null).map(() => {
    return {
-      channel: faker.company.name(),
+      channel: faker.person.fullName(),
       url: "",
    }
 })

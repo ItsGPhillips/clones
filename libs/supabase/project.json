@@ -1,0 +1,33 @@
+{
+  "name": "supabase",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/supabase/src",
+  "projectType": "library",
+  "targets": {
+    "gen:types": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "supabase gen types typescript --project-id boydmgzwehvxxvydovbv --schema public --schema storage --schema auth > ./src/types.ts",
+        "cwd": "libs/supabase"
+      }
+    },
+    "build": {
+      "executor": "@nx/js:swc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/supabase",
+        "main": "libs/supabase/src/index.ts",
+        "tsConfig": "libs/supabase/tsconfig.lib.json",
+        "assets": ["libs/supabase/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/supabase/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

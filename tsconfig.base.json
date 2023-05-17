@@ -19,6 +19,7 @@
       "baseUrl": ".",
       "paths": {
          "@shared/*": ["libs/shared/src/*"],
+         "@supabase": ["libs/supabase/src/index.ts"],
          "@youtube/app/*": ["apps/youtube/src/*"],
          "@youtube/components/*": ["libs/youtube/components/src/*"],
          "@youtube/icons/*": ["libs/youtube/icons/src/lib/*"],

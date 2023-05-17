@@ -1,7 +1,5 @@
-
 const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
 const { join } = require('path');
-const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -12,11 +10,5 @@ module.exports = {
     ),
     ...createGlobPatternsForDependencies(__dirname),
   ],
-  theme: {
-    extend: defaultTheme,
-    colors: {
-      "dark-800": "#0E0F0E",
-    },
-  },
-  plugins: [require('tailwindcss-animate')],
+  presets: [require("../../libs/youtube/shared/src/tailwind").config]
 };

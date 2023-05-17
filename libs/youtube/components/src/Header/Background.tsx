@@ -1,8 +1,12 @@
 "use client";
 
 import { cn } from "@shared/utils/cn";
-import { motion, useMotionTemplate, useTransform } from "framer-motion";
-import { useScroll } from "framer-motion";
+import {
+   motion,
+   useMotionTemplate,
+   useTransform,
+   useScroll,
+} from "framer-motion";
 import { PropsWithChildren } from "react";
 
 export const Background: React.FC<PropsWithChildren> = (props) => {
@@ -15,8 +19,8 @@ export const Background: React.FC<PropsWithChildren> = (props) => {
       <div className={cn("relative top-0 h-[var(--header-height)]")}>
          <motion.header
             className={cn(
-               "fixed w-full h-[var(--header-height)] px-8",
-               "z-30 flex flex-row items-stretch justify-between",
+               "fixed h-[var(--header-height)] w-full px-8",
+               "z-[200] flex flex-row items-stretch justify-between",
                "bg-dark-800"
             )}
             style={{

@@ -36,7 +36,7 @@ export const SideBarTrigger: React.FC = () => {
          <AnimatePresence>
             {isOpen && (
                <Dialog.Portal forceMount container={document.body}>
-                  <div className="fixed inset-0 z-50">
+                  <div className="fixed inset-0 z-[499]">
                      <Dialog.Overlay asChild>
                         <motion.div
                            initial={{
@@ -51,7 +51,7 @@ export const SideBarTrigger: React.FC = () => {
                            className="w-full h-full bg-black/50"
                         />
                      </Dialog.Overlay>
-                     <div className="absolute inset-0 flex items-center justify-center z-50 ">
+                     <div className="absolute inset-0 flex items-center justify-center z-[500] ">
                         <Dialog.Content asChild>
                            <motion.div
                               initial={{

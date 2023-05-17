@@ -4,6 +4,9 @@
   "sourceRoot": "apps/youtube",
   "projectType": "application",
   "targets": {
+    "db:gen": {
+      "command": "echo hello world"
+    },
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],

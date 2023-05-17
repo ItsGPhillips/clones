@@ -19,7 +19,7 @@
     "types": [
       "jest",
       "node"
-    ],
+    ]
   },
   "references": [
     {
@@ -30,7 +30,7 @@
     },
     {
       "path": "../../libs/youtube/icons/tsconfig.json"
-    },
+    }
   ],
   "include": [
     "**/*.ts",
@@ -38,8 +38,9 @@
     "**/*.js",
     "**/*.jsx",
     "next-env.d.ts",
-    "../../apps/youtube/.next/types/**/*.ts",
+    "./.next/types/**/*.ts",
     "tailwind.config.js",
+    "../../apps/youtube/.next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",
