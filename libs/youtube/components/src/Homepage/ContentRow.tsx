@@ -5,19 +5,8 @@ import { PropsWithChildren, useState } from "react";
 import { VideoCard } from "./VideoCard";
 import useMeasure from "react-use-measure";
 import { useIsomorphicLayoutEffect } from "framer-motion";
-import { z } from "zod";
 
 type Role = "recommended" | "breaking-news" | "subscriptions" | "movies";
-
-export const VIDEO_DATA_SCHEMA = z.object({
-   title: z.string(),
-   channel_id: z.string(),
-   channel_name: z.string(),
-   thumbnail_path: z.string(),
-   video_path: z.string(),
-});
-const VIDEO_DATA_ARRAY_SCHEMA = z.array(VIDEO_DATA_SCHEMA);
-export type VideoData = z.infer<typeof VIDEO_DATA_SCHEMA>;
 
 export const ContentRow: React.FC<
    PropsWithChildren<{
