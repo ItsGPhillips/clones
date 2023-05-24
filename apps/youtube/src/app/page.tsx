@@ -1,5 +1,3 @@
-import "server-only";
-
 import { Sidebar } from "@youtube/components/Sidebar";
 import { ContentSection } from "@youtube/components/Homepage/ContentSection";
 import { KeywordLinks } from "@youtube/components/Homepage/KeywordLinks";

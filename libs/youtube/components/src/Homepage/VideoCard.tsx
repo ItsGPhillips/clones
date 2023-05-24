@@ -1,43 +1,11 @@
 import { Avatar } from "@youtube/components/Avatar";
 import { cn } from "@shared/utils/cn";
 import { VideoCardThumbnail } from "./VideoCardThumbnail";
-import { VideoData } from "./ContentRow";
 import useSWR from "swr";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
-import { Database } from "@youtube/supabase";
 import { useSupabase } from "../Supabase";
 
 const PREFIX =
    "https://boydmgzwehvxxvydovbv.supabase.co/storage/v1/object/public/youtube";
-
-// if (props.videoData === undefined) {
-//    return <>Loading...</>;
-// }
-
-// return (
-//    <div className={cn("flex max-w-sm flex-1 flex-col items-center gap-2")}>
-//       <VideoCardThumbnail
-//          thumbnailUrl={`${prefix}/${props.videoData.thumbnail_path}`}
-//          videoUrl={`${prefix}/${props.videoData.video_path}`}
-//       />
-//       <div className="relative flex flex-row gap-2 self-start">
-//          <Avatar className="self-start" firstName="TEST" imageUrl={null} />
-//          <div className="flex max-w-[15rem] flex-col">
-//             <span className="text-md line-clamp-2 mb-1 font-bold">
-//                {props.videoData.title}
-//             </span>
-//             <span className="text-sm font-light text-white/60">
-//                {props.videoData.channel_name}
-//             </span>
-//             <span className="text-sm font-light text-white/60">
-//                555k views • 3 months ago
-//             </span>
-//          </div>
-//       </div>
-//    </div>
-// );
-
-// props: { videoData?: VideoData }
 
 export const revalidate = 0;
 

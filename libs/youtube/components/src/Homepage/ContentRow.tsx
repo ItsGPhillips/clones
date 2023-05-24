@@ -31,30 +31,30 @@ export const ContentRow: React.FC<
    useIsomorphicLayoutEffect(() => {
       if (bounds.width > 1200) {
          setElements([
-            <VideoCard key={1} />,
-            <VideoCard key={2} />,
-            <VideoCard key={3} />,
-            <VideoCard key={4} />,
+            <VideoCard key={1} videoId=""/>,
+            <VideoCard key={2} videoId=""/>,
+            <VideoCard key={3} videoId=""/>,
+            <VideoCard key={4} videoId=""/>,
          ]);
          return;
       }
       if (bounds.width > 900) {
          setElements([
-            <VideoCard key={1} />,
-            <VideoCard key={2} />,
-            <VideoCard key={3} />,
+            <VideoCard key={1} videoId=""/>,
+            <VideoCard key={2} videoId=""/>,
+            <VideoCard key={3} videoId=""/>,
          ]);
          return;
       }
       if (bounds.width > 520) {
          setElements([
-            <VideoCard key={1} />,
-            <VideoCard key={2} />,
+            <VideoCard key={1} videoId=""/>,
+            <VideoCard key={2} videoId=""/>,
          ]);
          return;
       }
       setElements([
-         <VideoCard key={1} />,
+         <VideoCard key={1} videoId=""/>,
       ]);
    }, [bounds.width]);
 
