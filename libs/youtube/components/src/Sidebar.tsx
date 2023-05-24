@@ -123,7 +123,7 @@ export const Sidebar: React.FC = () => {
                <Seperator />
                <Group title="Subscriptions">
                   {TMP_SUBSCRIPTIONS.map(({channel, url}) => {
-                     return <SidebarChannelLink channel={channel} href={url}/>
+                     return <SidebarChannelLink key={channel} channel={channel} href={url}/>
                   })}
                </Group>
                <Seperator />

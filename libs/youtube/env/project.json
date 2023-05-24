@@ -1,0 +1,26 @@
+{
+   "name": "youtube-env",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/youtube/env/src",
+   "projectType": "library",
+   "targets": {
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/youtube/env",
+            "main": "libs/youtube/env/src/index.ts",
+            "tsConfig": "libs/youtube/env/tsconfig.lib.json",
+            "assets": ["libs/youtube/env/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/youtube/env/**/*.ts"]
+         }
+      }
+   },
+   "tags": []
+}

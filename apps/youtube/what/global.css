@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .hover-link {
+    @apply rounded-full bg-transparent transition-opacity hover:bg-neutral-800 [&>*]:fill-white;
+  }
+
+  .gradiant-50 {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0) 0%,
+      theme('colors.dark-800') 50%
+    );
+  }
+}
+
+:root {
+  --header-height: theme(space.14);
+  --content-height: calc(100vh - var(--header-height));
+  --homepage-card-max-width: theme(containers.sm);
+}

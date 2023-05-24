@@ -1,31 +1,32 @@
 {
-   "compileOnSave": false,
-   "compilerOptions": {
-      "rootDir": ".",
-      "jsx": "react",
-      "sourceMap": true,
-      "declaration": false,
-      "moduleResolution": "node",
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "importHelpers": true,
-      "target": "es2015",
-      "module": "esnext",
-      "lib": ["es2020", "dom"],
-      "skipLibCheck": true,
-      "skipDefaultLibCheck": true,
-      "noUncheckedIndexedAccess": true,
-      "esModuleInterop": true,
-      "baseUrl": ".",
-      "paths": {
-         "@shared/*": ["libs/shared/src/*"],
-         "@supabase": ["libs/supabase/src/index.ts"],
-         "@youtube/app/*": ["apps/youtube/src/*"],
-         "@youtube/components/*": ["libs/youtube/components/src/*"],
-         "@youtube/icons/*": ["libs/youtube/icons/src/lib/*"],
-         "@youtube/shared/*": ["libs/youtube/shared/src/*"]
-      }
-   },
-   "include": ["**/*.ts", "**/*.tsx", "**/**/*.ts", "**/**/*.tsx"],
-   "exclude": ["node_modules", "tmp"]
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "jsx": "react",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2020", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["libs/shared/src/*"],
+      "@youtube/app/*": ["apps/youtube/src/*"],
+      "@youtube/components/*": ["libs/youtube/components/src/*"],
+      "@youtube/env": ["libs/youtube/env/src/index.ts"],
+      "@youtube/icons/*": ["libs/youtube/icons/src/lib/*"],
+      "@youtube/shared/*": ["libs/youtube/shared/src/*"],
+      "@youtube/supabase": ["libs/youtube/supabase/src/index.ts"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/**/*.ts", "**/**/*.tsx"],
+  "exclude": ["node_modules", "tmp"]
 }

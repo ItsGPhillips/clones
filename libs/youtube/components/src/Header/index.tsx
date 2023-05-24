@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import * as Tooltip from "@shared/components/Tooltip";
 import { HoverButton } from "@youtube/components/HoverButton";
 import { YoutubeLogo } from "@youtube/icons/YoutubeLogo";

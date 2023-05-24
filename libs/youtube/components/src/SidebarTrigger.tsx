@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import * as Dialog from "@shared/components/Dialog";
 import { HoverButton } from "./HoverButton";

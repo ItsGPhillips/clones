@@ -15,26 +15,27 @@ export const Provider: React.FC<ComponentProps<typeof RadixToolip.Provider>> = (
     <RadixToolip.Provider {...props}>{props.children}</RadixToolip.Provider>
   );
 };
+
 export const Root: React.FC<
   ComponentProps<typeof RadixToolip.Root> & {
     tooltip: React.ReactNode;
     defaultTooltip?: boolean;
   }
-> = (props) => {
+> = ({ tooltip, defaultTooltip, ...props }) => {
   return (
     <RadixToolip.Root {...props}>
       {props.children}
-      <Content tooltip={props.tooltip} defaultTooltip={props.defaultTooltip} />
+      <Content tooltip={tooltip} defaultTooltip={defaultTooltip} />
     </RadixToolip.Root>
   );
 };
-// "db:gen": "supabase gen types typescript --project-id boydmgzwehvxxvydovbv --schema public --schema storage --schema auth > supabase/types.ts",
 
 export const Trigger: React.FC<ComponentProps<typeof RadixToolip.Trigger>> = (
   props
 ) => {
   return <RadixToolip.Trigger {...props}>{props.children}</RadixToolip.Trigger>;
 };
+
 export const Portal = (props: ComponentProps<typeof RadixToolip.Portal>) => {
   return (
     <RadixToolip.Portal container={document.body} {...props}>

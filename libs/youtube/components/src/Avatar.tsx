@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import * as RadixAvatar from "@radix-ui/react-avatar";
 import { cn } from "@shared/utils/cn";

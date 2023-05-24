@@ -7,27 +7,43 @@ import { FiSearch } from "react-icons/fi";
 import * as Tooltip from "@shared/components/Tooltip";
 import useResizeObserver from "use-resize-observer";
 import { SearchResultsPanel } from "./SearchResultsPanel";
+import { useFocusWithin } from "@react-aria/interactions";
+import { useState } from "react";
 
 export const HeaderSearchInput: React.FC = () => {
+   const [searchResultsOpen, setSearchResultsOpen] = useState<boolean>(false);
    const { ref, width = 1 } = useResizeObserver<HTMLElement>({
       box: "border-box",
    });
+   const { focusWithinProps } = useFocusWithin({
+      onFocusWithinChange(isFocusWithin) {
+         setSearchResultsOpen(isFocusWithin);
+      },
+   });
+
    return (
       <div className="isolate flex flex-1 grow flex-row items-stretch">
-         <div className="relative flex w-fit grow items-stretch overflow-hidden focus-within:overflow-visible">
-            <div className="absolute -left-9 flex h-full w-14 items-center justify-center p-2">
-               <FiSearch className="" />
-            </div>
+         <div
+            className="relative flex w-fit grow items-stretch"
+            {...focusWithinProps}
+         >
+            {searchResultsOpen && (
+               <div className="absolute -left-9 flex h-full w-14 items-center justify-center p-2">
+                  <FiSearch className="" />
+               </div>
+            )}
             <input
                ref={ref}
                placeholder="Search..."
                className={cn(
-                  "w-40 flex-1 bg-transparent py-1 pl-4 pr-2 text-white outline-none focus:-ml-8 focus:pl-12",
-                  "border-[1px] border-neutral-700 focus:border-blue-500",
-                  "rounded-l-full leading-3"
+                  "w-40 flex-1 bg-transparent py-1 pl-4 pr-2 text-white outline-none",
+                  "rounded-l-full border-[1px] border-neutral-700 leading-3",
+                  {
+                     "-ml-8 border-blue-500 pl-12": searchResultsOpen,
+                  }
                )}
             />
-            <SearchResultsPanel width={width} />
+            {searchResultsOpen && <SearchResultsPanel width={width} />}
          </div>
          <div
             className={cn(

@@ -19,6 +19,9 @@
     {
       "path": "./../../shared/tsconfig.json"
     },
+    {
+      "path": "./../supabase/tsconfig.json"
+    },
   ],
   "include": [
     "**/*.ts",
