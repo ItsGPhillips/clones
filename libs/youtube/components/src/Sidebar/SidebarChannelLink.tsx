@@ -1,4 +1,4 @@
-import { Avatar } from "./Avatar";
+import { Avatar } from "../Avatar";
 import { SideBarButton } from "./SideBarButton";
 
 type SidebarChannelLinkProps = {
@@ -17,8 +17,8 @@ export const SidebarChannelLink = (props: SidebarChannelLinkProps) => {
             imageUrl={null}
          />
          <span className="flex flex-nowrap items-center gap-1 overflow-ellipsis">
-            <span>{channel[0]}</span>
-            <span>{channel[1] ?? null}</span>
+            <span className="whitespace-nowrap">{channel[0]}</span>
+            <span className="whitespace-nowrap">{channel[1] ?? null}</span>
          </span>
       </SideBarButton>
    );

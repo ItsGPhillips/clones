@@ -1,24 +1,17 @@
-import Link from "next/link";
 import * as Tooltip from "@shared/components/Tooltip";
 import { HoverButton } from "@youtube/components/HoverButton";
-import { YoutubeLogo } from "@youtube/icons/YoutubeLogo";
 import { CreateIcon } from "@youtube/icons/CreateIcon";
 import { HeaderSearchInput } from "./HeaderSearchInput";
 import { AiOutlineBell } from "react-icons/ai";
 import { Avatar } from "../Avatar";
-import { SideBarTrigger } from "../SidebarTrigger";
 import { Background } from "./Background";
+import { YoutubeLogoWithSidebarTrigger } from "../Sidebar/YoutubeLogoSection";
 
-export const Header = (props: { contryCode: string; }) => {
+export const Header = (props: { contryCode: string }) => {
    return (
       <Background>
          {/* Left Side */}
-         <div className="isolate flex flex-row items-center">
-            <SideBarTrigger />
-            <Link href={"/"} className="ml-8">
-               <YoutubeLogo contryCode={props.contryCode} />
-            </Link>
-         </div>
+         <YoutubeLogoWithSidebarTrigger contryCode={props.contryCode} />
          {/* Search */}
          <div className="flex w-[40%] max-w-[600px] items-center justify-start">
             <HeaderSearchInput />

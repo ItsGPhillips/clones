@@ -36,7 +36,9 @@ export default async function RootLayout({
    children: React.ReactNode;
 }) {
    const supabase = createServerComponentClient();
-   const { data: { session } } = await supabase.auth.getSession();
+   const {
+      data: { session },
+   } = await supabase.auth.getSession();
 
    const headers = Headers();
    const contryCode = await getContryCode(headers.get("x-forwarded-for"));
@@ -53,7 +55,9 @@ export default async function RootLayout({
             <SupabaseProvider session={session}>
                <Tooltip.Provider delayDuration={100}>
                   <Header contryCode={contryCode} />
-                  {children}
+                  <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
+                     {children}
+                  </div>
                </Tooltip.Provider>
             </SupabaseProvider>
          </body>

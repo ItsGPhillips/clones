@@ -16,34 +16,60 @@ export const ContentRow: React.FC<
 > = (props) => {
    const [elements, setElements] = useState<React.ReactElement[]>([]);
    const [ref, bounds] = useMeasure();
-
    useIsomorphicLayoutEffect(() => {
       if (bounds.width > 1200) {
          setElements([
-            <VideoCard key={1} videoId=""/>,
-            <VideoCard key={2} videoId=""/>,
-            <VideoCard key={3} videoId=""/>,
-            <VideoCard key={4} videoId=""/>,
+            <VideoCard
+               key={1}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={2}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={3}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={4}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
          ]);
          return;
       }
       if (bounds.width > 900) {
          setElements([
-            <VideoCard key={1} videoId=""/>,
-            <VideoCard key={2} videoId=""/>,
-            <VideoCard key={3} videoId=""/>,
+            <VideoCard
+               key={1}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={2}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={3}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
          ]);
          return;
       }
       if (bounds.width > 520) {
          setElements([
-            <VideoCard key={1} videoId=""/>,
-            <VideoCard key={2} videoId=""/>,
+            <VideoCard
+               key={1}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
+            <VideoCard
+               key={2}
+               videoId="e55530a8-1499-4c59-bdc4-8795fb464f72"
+            />,
          ]);
          return;
       }
       setElements([
-         <VideoCard key={1} videoId=""/>,
+         <VideoCard key={1} videoId="e55530a8-1499-4c59-bdc4-8795fb464f72" />,
       ]);
    }, [bounds.width]);
 

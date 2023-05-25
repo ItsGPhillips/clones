@@ -1,7 +1,6 @@
 //--- icons
 import { HomeIcon } from "@youtube/icons/HomeIcon";
 import { SubscriptionsIcon } from "@youtube/icons/SubscriptionsIcon";
-import { YoutubeLogo } from "@youtube/icons/YoutubeLogo";
 import { ShortsIcon } from "@youtube/icons/ShortsIcon";
 import { LibraryIcon } from "@youtube/icons/LibraryIcon";
 import { HistoryIcon } from "@youtube/icons/HistoryIcon";
@@ -33,28 +32,37 @@ import * as ScrollArea from "@shared/components/ScrollArea";
 import Link from "next/link";
 import { SidebarChannelLink } from "./SidebarChannelLink";
 
-const Seperator = forwardRef<HTMLHRElement, ComponentProps<"hr">>((props, ref) => {
-   return <hr {...props} className="border-white/20">{props.children}</hr>;
-});
+const Seperator = forwardRef<HTMLHRElement, ComponentProps<"hr">>(
+   (props, ref) => {
+      return (
+         <hr {...props} className="border-white/20">
+            {props.children}
+         </hr>
+      );
+   }
+);
 
-const Group: React.FC<PropsWithChildren<{ title?: string; }>> = (props) => {
+const Group: React.FC<PropsWithChildren<{ title?: string }>> = (props) => {
    return (
-      <div
-         className="flex flex-col p-2 "
-      >
-         {!!props.title && <h3 className="w-full ml-4 mt-2 mb-1 font-medium">{props.title}</h3>}
+      <div className="flex flex-col p-2 ">
+         {!!props.title && (
+            <h3 className="ml-4 mt-2 mb-1 w-full font-medium">{props.title}</h3>
+         )}
          {props.children}
       </div>
    );
 };
 
-import {faker} from "@faker-js/faker"
-const TMP_SUBSCRIPTIONS = Array(14).fill(null).map(() => {
-   return {
-      channel: faker.person.fullName(),
-      url: "",
-   }
-})
+import { faker } from "@faker-js/faker";
+import { YoutubeLogoWithSidebarTrigger } from "./YoutubeLogoSection";
+const TMP_SUBSCRIPTIONS = Array(14)
+   .fill(null)
+   .map(() => {
+      return {
+         channel: faker.person.fullName(),
+         url: "",
+      };
+   });
 
 const FOOTER_LINKS = {
    info: [
@@ -72,17 +80,26 @@ const FOOTER_LINKS = {
       { label: "Policy & Safety", href: "#" },
       { label: "How Youtube Works", href: "#" },
       { label: "Test new features", href: "#" },
-   ]
+   ],
 } as const;
 
-export const Sidebar: React.FC = () => {
+export const SidebarContent: React.FC<{
+   includeLogo?: boolean;
+   countryCode?: string;
+}> = (props) => {
    return (
       <>
-         {/* <div className="-ml-4 h-14 flex items-center justify-center">
-            <YoutubeLogo contryCode={"GB"} />
-         </div> */}
-         <ScrollArea.Root className="relative w-full h-full overflow-hidden pr-4" scrollHideDelay={0.1}>
-            <ScrollArea.Viewport className="w-full h-full">
+         {props.includeLogo && (
+            <YoutubeLogoWithSidebarTrigger
+               className="ml-6 h-[var(--header-height)] shrink-0"
+               contryCode={props.countryCode ?? "??"}
+            />
+         )}
+         <ScrollArea.Root
+            className="relative h-full w-full overflow-hidden pr-4"
+            scrollHideDelay={0.1}
+         >
+            <ScrollArea.Viewport className="h-full w-full">
                <Group>
                   <SideBarButton href="/">
                      <HomeIcon fill="white" />
@@ -122,8 +139,14 @@ export const Sidebar: React.FC = () => {
                </Group>
                <Seperator />
                <Group title="Subscriptions">
-                  {TMP_SUBSCRIPTIONS.map(({channel, url}) => {
-                     return <SidebarChannelLink key={channel} channel={channel} href={url}/>
+                  {TMP_SUBSCRIPTIONS.map(({ channel, url }) => {
+                     return (
+                        <SidebarChannelLink
+                           key={channel}
+                           channel={channel}
+                           href={url}
+                        />
+                     );
                   })}
                </Group>
                <Seperator />
@@ -205,28 +228,36 @@ export const Sidebar: React.FC = () => {
                </Group>
                <Seperator />
                <Group>
-                  <div className="flex flex-wrap text-[0.79rem] mx-4 my-2">
+                  <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.info.map(({ label, href }) => {
                         return (
-                           <Link className="text-white/70 mr-1" href={href}>{label}</Link>
+                           <Link className="mr-1 text-white/70" href={href}>
+                              {label}
+                           </Link>
                         );
                      })}
                   </div>
-                  <div className="flex flex-wrap text-[0.79rem] mx-4 my-2">
+                  <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.terms.map(({ label, href }) => {
                         return (
-                           <Link className="text-white/70 mr-1" href={href}>{label}</Link>
+                           <Link className="mr-1 text-white/70" href={href}>
+                              {label}
+                           </Link>
                         );
                      })}
                   </div>
-                  <div className="ml-4 text-xs text-white/50 py-4">© 2023 Google LLC</div>
+                  <div className="ml-4 py-4 text-xs text-white/50">
+                     © 2023 Google LLC
+                  </div>
                </Group>
             </ScrollArea.Viewport>
-            <ScrollArea.Scrollbar className="w-2 bg-transparent select-none mr-1" orientation="vertical">
+            <ScrollArea.Scrollbar
+               className="mr-1 w-2 select-none bg-transparent"
+               orientation="vertical"
+            >
                <ScrollArea.Thumb className="w-full rounded-full bg-white/50" />
             </ScrollArea.Scrollbar>
          </ScrollArea.Root>
       </>
    );
 };
-

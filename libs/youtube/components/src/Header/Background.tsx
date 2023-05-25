@@ -22,7 +22,7 @@ export const Background: React.FC<PropsWithChildren> = (props) => {
       <div className={cn("relative top-0 h-[var(--header-height)]")}>
          <motion.header
             className={cn(
-               "fixed h-[var(--header-height)] w-full px-8",
+               "fixed h-[var(--header-height)] w-full px-6",
                "z-[200] flex flex-row items-stretch justify-between",
                "bg-dark-800"
             )}
