@@ -6,7 +6,7 @@ import { LibraryIcon } from "@youtube/icons/LibraryIcon";
 import { HistoryIcon } from "@youtube/icons/HistoryIcon";
 import { YourVideosIcon } from "@youtube/icons/YourVideosIcon";
 import { WatchLaterIcon } from "@youtube/icons/WatchLaterIcon";
-import { LikedVideosIcon } from "@youtube/icons/LikedVideosIcon";
+import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { TrendingIcon } from "@youtube/icons/TrendingIcon";
 import { MusicIcon } from "@youtube/icons/MusicIcon";
 import { MoviesAndShowsIcon } from "@youtube/icons/MusicAndShowsIcon";
@@ -21,7 +21,7 @@ import { YoutubeStudioIcon } from "@youtube/icons/YoutubeStudioIcon";
 import { YoutubeMusicIcon } from "@youtube/icons/YoutubeMusicIcon";
 import { YoutubeKidsIcon } from "@youtube/icons/YoutubeKidsIcon";
 import { SettingsIcon } from "@youtube/icons/SettingsIcon";
-import { ReportHistoryIcon } from "@youtube/icons/ReportHistoryIcon";
+import { ReportIcon } from "@youtube/icons/ReportIcon";
 import { HelpIcon } from "@youtube/icons/HelpIcon";
 import { SendFeedbackIcon } from "@youtube/icons/SendFeedbackIcon";
 //---
@@ -133,7 +133,7 @@ export const SidebarContent: React.FC<{
                      <span>Watch Later</span>
                   </SideBarButton>
                   <SideBarButton href="/playlist?list=LL">
-                     <LikedVideosIcon fill="white" />
+                     <LikeIcon fill="white" />
                      <span>Liked Videos</span>
                   </SideBarButton>
                </Group>
@@ -214,7 +214,7 @@ export const SidebarContent: React.FC<{
                      <span>Settings</span>
                   </SideBarButton>
                   <SideBarButton href="#">
-                     <ReportHistoryIcon fill="white" />
+                     <ReportIcon fill="white" />
                      <span>Report History</span>
                   </SideBarButton>
                   <SideBarButton href="#">

@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { IconProps } from '..';
 
-export const LikedVideosIcon = forwardRef<
+export const LikeIcon = forwardRef<
    SVGSVGElement,
    IconProps
 >((props, ref) => {

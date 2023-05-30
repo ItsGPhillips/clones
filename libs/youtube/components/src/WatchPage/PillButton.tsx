@@ -21,7 +21,7 @@ export const PillButton = forwardRef(
             ref={mergeRefs(ref, forwardedRef)}
             {...buttonProps}
             className={cn(
-               "flex items-center justify-center gap-2 rounded-full bg-white/10 py-2 px-4 transition-all duration-75 hover:bg-white/20",
+               "flex items-center justify-center gap-2 rounded-full bg-white/10 py-2 px-4 transition-all duration-75 hover:bg-white/20 outline-none",
                className
             )}
          >

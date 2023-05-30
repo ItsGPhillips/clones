@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 import { IconProps } from '..';
 
-export const ReportHistoryIcon = forwardRef<
+export const ReportIcon = forwardRef<
    SVGSVGElement,
    IconProps
 >((props, ref) => {

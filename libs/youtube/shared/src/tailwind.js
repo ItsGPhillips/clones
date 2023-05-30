@@ -7,18 +7,20 @@ const config = {
       extend: defaultTheme,
       colors: {
          "dark-800": "#0E0F0E",
+         "dark-400": "#272727",
+         "dark-300": "#3E3F3E",
       },
    },
    plugins: [
       require("tailwindcss-animate"),
       require("@tailwindcss/container-queries"),
-      require('@tailwindcss/line-clamp')
+      require("@tailwindcss/line-clamp"),
    ],
 };
 
-const theme = resolveConfig(config).theme
+const theme = resolveConfig(config).theme;
 
 module.exports = {
    config,
    theme,
-}; 
+};

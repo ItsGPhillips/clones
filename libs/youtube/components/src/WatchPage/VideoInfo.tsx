@@ -3,13 +3,14 @@ import { Description } from "./Description";
 import { subWeeks } from "date-fns";
 import { faker } from "@faker-js/faker";
 import { PillButton } from "./PillButton";
-import { LikedVideosIcon } from "@youtube/icons/LikedVideosIcon";
+import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { ShareIcon } from "@youtube/icons/ShareIcon";
-import { DownloadIcon } from "@youtube/icons/DownloadIcon";
+import { ClipIcon } from "@youtube/icons/ClipIcon";
 import { SaveIcon } from "@youtube/icons/SaveIcon";
-import { EllipsisIcon } from "@youtube/icons/EllipsisIcon";
 import { cn } from "@shared/utils/cn";
 import { EllipsisButton } from "./EllipsisButton";
+import { Avatar } from "@youtube/components/Avatar";
+import { Comment } from "./Comment";
 
 const getData = async () => {
    const supabase = createServerComponentClient();
@@ -29,10 +30,22 @@ export const VideoInfo = async () => {
       <div className="flex flex-col gap-2">
          <h2 className="mt-2 text-xl font-bold">{videoData.title}</h2>
          <div className="flex h-12">
-            <div className="text-bold ml-auto flex items-center gap-2 text-sm">
+            <div className="flex items-center gap-2">
+               <Avatar firstName={videoData.channel_name} imageUrl={null} />
+               <div className="flex flex-col gap-1">
+                  <span className="text-bold text-sm">
+                     {videoData.channel_name}
+                  </span>
+                  <span className="text-xs">0 subscribers</span>
+               </div>
+            </div>
+            <button className="ml-6 flex h-10 items-center justify-center rounded-full bg-white p-3 text-sm font-bold text-black">
+               Subscribe
+            </button>
+            <div className="ml-auto flex items-center gap-2 text-sm font-bold">
                <div className="flex items-center">
                   <PillButton className="flex gap-1 rounded-r-none pl-4 pr-0">
-                     <LikedVideosIcon className="h-6 w-6" fill="white" />
+                     <LikeIcon className="h-6 w-6" fill="white" />
                      <span
                         className={cn("border-r-[1px] border-white/20 pr-2")}
                      >
@@ -40,10 +53,7 @@ export const VideoInfo = async () => {
                      </span>
                   </PillButton>
                   <PillButton className="flex rounded-l-none pl-2">
-                     <LikedVideosIcon
-                        className="h-6 w-6 rotate-180"
-                        fill="white"
-                     />
+                     <LikeIcon className="h-6 w-6 rotate-180" fill="white" />
                   </PillButton>
                </div>
                <PillButton>
@@ -51,8 +61,8 @@ export const VideoInfo = async () => {
                   <span>Share</span>
                </PillButton>
                <PillButton>
-                  <DownloadIcon className="h-6 w-6" fill="white" />
-                  <span>Download</span>
+                  <ClipIcon className="h-6 w-6" fill="white" />
+                  <span>Clip</span>
                </PillButton>
                <PillButton>
                   <SaveIcon className="h-6 w-6" fill="white" />
@@ -69,6 +79,22 @@ export const VideoInfo = async () => {
             uploadDate={subWeeks(new Date(), 2)}
             tags={["tag1", "computers", "test"]}
          />
+         <div>
+            <h3 className="my-6">1000 Comments</h3>
+            <div className="flex flex-col gap-4">
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+               <Comment />
+            </div>
+         </div>
       </div>
    );
 };
