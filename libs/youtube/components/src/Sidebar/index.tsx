@@ -36,13 +36,13 @@ export const Sidebar: React.FC = () => {
 
    if (path === "/") {
       return isOpen ? (
-         <div className="top-[var(--header-height)] shrink-0 basis-60 ">
+         <div className="top-[var(--header-height)] shrink-0 basis-60 hidden md:block">
             <div className="fixed h-[var(--content-height)] w-60">
                <SidebarContent />
             </div>
          </div>
       ) : (
-         <div className="top-[var(--header-height)] shrink-0 basis-16">
+         <div className="top-[var(--header-height)] shrink-0 basis-16 hidden md:block">
             <div className="fixed h-[var(--content-height)] w-16">
                <div className="m-1 flex h-fit w-16 flex-col items-center gap-2 rounded-lg p-4 hover:bg-white/20 ">
                   <HomeIcon fill="white" className="h-6 w-6" />
@@ -65,6 +65,7 @@ export const Sidebar: React.FC = () => {
       );
    }
 
+
    return (
       <Dialog.Root
          open={!!isOpen}
@@ -72,7 +73,7 @@ export const Sidebar: React.FC = () => {
             if (!o) setIsOpen(false);
          }}
       >
-         <AnimatePresence>
+         <AnimatePresence >
             {isOpen && (
                <Dialog.Portal forceMount container={document.body}>
                   <div className="fixed inset-0 z-[499]">
@@ -115,7 +116,7 @@ export const Sidebar: React.FC = () => {
                                  "flex flex-col"
                               )}
                            >
-                              <SidebarContent includeLogo />
+                              <SidebarContent includeLogo countryCode={"GB"}/>
                            </motion.div>
                         </Dialog.Content>
                      </div>

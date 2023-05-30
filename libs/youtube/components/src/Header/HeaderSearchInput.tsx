@@ -10,7 +10,7 @@ import { SearchResultsPanel } from "./SearchResultsPanel";
 import { useFocusWithin } from "@react-aria/interactions";
 import { useState } from "react";
 
-export const HeaderSearchInput: React.FC = () => {
+const useHeaderSearchInputState = () => {
    const [searchResultsOpen, setSearchResultsOpen] = useState<boolean>(false);
    const { ref, width = 1 } = useResizeObserver<HTMLElement>({
       box: "border-box",
@@ -20,9 +20,41 @@ export const HeaderSearchInput: React.FC = () => {
          setSearchResultsOpen(isFocusWithin);
       },
    });
+   return {
+      searchResultsOpen,
+      setSearchResultsOpen,
+      width,
+      ref,
+      focusWithinProps,
+   };
+};
+
+export const SmallScreen: React.FC = () => {
+   const { ref, searchResultsOpen } = useHeaderSearchInputState();
 
    return (
-      <div className="isolate flex flex-1 grow flex-row items-stretch">
+      <div className="absolute inset-0">
+         <input
+            ref={ref}
+            placeholder="Search..."
+            className={cn(
+               "w-40 flex-1 bg-transparent py-1 pl-4 pr-2 text-white outline-none",
+               "rounded-l-full border-[1px] border-neutral-700 leading-3",
+               {
+                  "-ml-8 border-blue-500 pl-12": searchResultsOpen,
+               }
+            )}
+         />
+      </div>
+   );
+};
+
+export const HeaderSearchInput: React.FC = () => {
+   const { focusWithinProps, ref, searchResultsOpen, width } =
+      useHeaderSearchInputState();
+
+   return (
+      <div className="flex flex-1 grow flex-row items-stretch">
          <div
             className="relative flex w-fit grow items-stretch"
             {...focusWithinProps}

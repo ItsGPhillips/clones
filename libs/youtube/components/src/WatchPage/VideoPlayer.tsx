@@ -20,15 +20,19 @@ export const VideoPlayer = () => {
    }, []);
 
    return (
-      <div className="w-full">
-         {(!!videoId && !isLoading) && (
-            <video controls className="w-full aspect-video max-h-[86vh] bg-black">
+      <div className="relative w-full rounded-xl overflow-hidden">
+         {!!videoId && !isLoading && (
+            <video
+               controls
+               className=" aspect-video max-h-[86vh] w-full bg-black"
+            >
                <source
                   src={`${PREFIX}/${data?.video_path}`}
                   type="video/webm"
                />
             </video>
          )}
+         <div className="absolute bottom-0 right-0 p-2">test</div>
       </div>
    );
 };

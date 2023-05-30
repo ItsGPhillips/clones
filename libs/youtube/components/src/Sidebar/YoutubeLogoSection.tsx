@@ -16,7 +16,7 @@ export const YoutubeLogoWithSidebarTrigger: React.FC<{
          className={cn("isolate flex flex-row items-center", props.className)}
       >
          <SideBarTrigger />
-         <Link href={"/"} className="ml-6">
+         <Link href={"/"} className="ml-3 md:ml-6">
             <YoutubeLogo contryCode={props.contryCode} />
          </Link>
       </div>

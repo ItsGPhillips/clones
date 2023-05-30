@@ -18,7 +18,7 @@ export const SideBarTrigger: React.FC<{}> = () => {
       ref
    );
    return (
-      <HoverButton ref={ref} className="h-10 w-10 p-2" {...buttonProps}>
+      <HoverButton ref={ref} className="h-10 w-10 p-2 hidden md:flex" {...buttonProps}>
          <AiOutlineMenu />
       </HoverButton>
    );
