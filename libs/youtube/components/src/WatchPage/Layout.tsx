@@ -29,21 +29,15 @@ export const WatchPageLayout: React.FC<
    return (
       <WATCH_PAGE_STATE_CTX.Provider value={{ cinemaMode }}>
          <main
-            className={cn("flex w-full mx-[6%] flex-1", {
+            className={cn("mx-[6%] flex w-full flex-1 gap-4 mt-4", {
                "flex-col": cinemaMode[0],
             })}
          >
-            <div className="flex flex-col flex-1">
-               <div className="aspect-video">
-                  {props.videoPlayer}
-               </div>
-               <div className="flex-1 grow">
-                  {props.videoInfo}
-               </div>
+            <div className="flex flex-1 flex-col">
+               <div className="aspect-video">{props.videoPlayer}</div>
+               <div className="flex-1 grow">{props.videoInfo}</div>
             </div>
-            <div className="shrink-0 w-96 border-2">
-               Recomendations
-            </div>
+            <div className="w-96 shrink-0">{props.recomendations}</div>
          </main>
       </WATCH_PAGE_STATE_CTX.Provider>
    );

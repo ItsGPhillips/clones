@@ -28,18 +28,18 @@ export const VideoInfo = async () => {
    const videoData = await getData();
    return (
       <div className="flex flex-col gap-2">
-         <h2 className="mt-2 text-xl font-bold">{videoData.title}</h2>
+         <h2 className="mt-3 text-xl font-bold">{videoData.title}</h2>
          <div className="flex h-12">
             <div className="flex items-center gap-2">
                <Avatar firstName={videoData.channel_name} imageUrl={null} />
-               <div className="flex flex-col gap-1">
-                  <span className="text-bold text-sm">
+               <div className="flex flex-col">
+                  <span className="text-sm font-bold">
                      {videoData.channel_name}
                   </span>
-                  <span className="text-xs">0 subscribers</span>
+                  <span className="text-xs text-white/80">0 subscribers</span>
                </div>
             </div>
-            <button className="ml-6 flex h-10 items-center justify-center rounded-full bg-white p-3 text-sm font-bold text-black">
+            <button className="ml-6 flex h-10 items-center justify-center place-self-center rounded-full bg-white py-3 px-4 text-sm font-bold text-black">
                Subscribe
             </button>
             <div className="ml-auto flex items-center gap-2 text-sm font-bold">
@@ -79,9 +79,15 @@ export const VideoInfo = async () => {
             uploadDate={subWeeks(new Date(), 2)}
             tags={["tag1", "computers", "test"]}
          />
+         <a
+            href="https://support.google.com/youtube/answer/2797468?hl=en-GB"
+            className="text-sm text-blue-400 hover:cursor-pointer hover:underline"
+         >
+            Licence - Creative Commons | Public Domain
+         </a>
          <div>
             <h3 className="my-6">1000 Comments</h3>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
                <Comment />
                <Comment />
                <Comment />

@@ -12,8 +12,6 @@ export const VideoPlayer = () => {
    const { supabase } = useSupabase();
    const { data, isLoading } = useVideoInfo(supabase, videoId);
 
-   console.log(data);
-
    useEffect(() => {
       const params = new URLSearchParams(window.location.search);
       setVideoId(params.get("v") ?? undefined);
