@@ -24,7 +24,8 @@
       "@youtube/env": ["libs/youtube/env/src/index.ts"],
       "@youtube/icons/*": ["libs/youtube/icons/src/lib/*"],
       "@youtube/shared/*": ["libs/youtube/shared/src/*"],
-      "@youtube/supabase": ["libs/youtube/supabase/src/index.ts"]
+      "@youtube/supabase": ["libs/youtube/supabase/src/index.ts"],
+      "@youtube/tools": ["libs/youtube/tools/src/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/**/*.ts", "**/**/*.tsx"],

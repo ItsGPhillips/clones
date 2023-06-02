@@ -1,7 +1,9 @@
-import { createServerComponentClient } from "@youtube/supabase";
+import {
+   createServerComponentClient,
+   serverGetVideoData,
+} from "@youtube/supabase";
 import { Description } from "./Description";
 import { subWeeks } from "date-fns";
-import { faker } from "@faker-js/faker";
 import { PillButton } from "./PillButton";
 import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { ShareIcon } from "@youtube/icons/ShareIcon";
@@ -12,20 +14,9 @@ import { EllipsisButton } from "./EllipsisButton";
 import { Avatar } from "@youtube/components/Avatar";
 import { Comment } from "./Comment";
 
-const getData = async () => {
-   const supabase = createServerComponentClient();
-   const { data, error } = await supabase.rpc("get_video_info", {
-      param_video_id: "e55530a8-1499-4c59-bdc4-8795fb464f72",
-   });
+export const VideoInfo = async (props: { videoId: string }) => {
+   const videoData = await serverGetVideoData(props.videoId);
 
-   if (error) throw error;
-   const [videoData] = data;
-   if (!videoData) throw new Error("video data was undefined");
-   return videoData;
-};
-
-export const VideoInfo = async () => {
-   const videoData = await getData();
    return (
       <div className="flex flex-col gap-2">
          <h2 className="mt-3 text-xl font-bold">{videoData.title}</h2>
@@ -49,7 +40,7 @@ export const VideoInfo = async () => {
                      <span
                         className={cn("border-r-[1px] border-white/20 pr-2")}
                      >
-                        123
+                        {videoData.likes ?? "NULL"}
                      </span>
                   </PillButton>
                   <PillButton className="flex rounded-l-none pl-2">
@@ -74,32 +65,41 @@ export const VideoInfo = async () => {
             </div>
          </div>
          <Description
-            description={faker.lorem.paragraphs()}
-            views={10200}
-            uploadDate={subWeeks(new Date(), 2)}
-            tags={["tag1", "computers", "test"]}
+            description={videoData.video_description}
+            views={0}
+            uploadDate={new Date(videoData.upload_date)}
+            tags={["tag1", "tag2", "tag3"]}
          />
          <a
             href="https://support.google.com/youtube/answer/2797468?hl=en-GB"
-            className="text-sm text-blue-400 hover:cursor-pointer hover:underline"
+            className="text-sm text-blue-400 mt-2 hover:cursor-pointer hover:underline"
          >
             Licence - Creative Commons | Public Domain
          </a>
-         <div>
-            <h3 className="my-6">1000 Comments</h3>
-            <div className="flex flex-col gap-2">
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-               <Comment />
-            </div>
+         {/* @ts-expect-error */}
+         <CommentSection videoId={props.videoId} />
+      </div>
+   );
+};
+
+const CommentSection = async (props: { videoId: string }) => {
+   console.log(props);
+
+   const supabase = createServerComponentClient();
+   const { data } = await supabase.rpc("get_comment_info", {
+      param_video_id: props.videoId,
+      param_parent_id: "",
+   });
+
+   return (
+      <div>
+         <h3 className="mb-6 mt-2">{data?.length ?? 0} Comments</h3>
+         <div className="flex flex-col gap-2">
+            {data?.map((comment) => {
+               if (comment.parent === null) {
+                  return <Comment comment={comment} />;
+               }
+            })}
          </div>
       </div>
    );

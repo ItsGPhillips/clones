@@ -1,0 +1,33 @@
+{
+   "name": "youtube-tools",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/youtube/tools/src",
+   "projectType": "library",
+   "targets": {
+      "exec": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/youtube/tools",
+            "command": "ts-node --esm ./src/main.ts"
+         }
+      },
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/youtube/tools",
+            "main": "libs/youtube/tools/src/index.ts",
+            "tsConfig": "libs/youtube/tools/tsconfig.lib.json",
+            "assets": ["libs/youtube/tools/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/youtube/tools/**/*.ts"]
+         }
+      }
+   },
+   "tags": []
+}

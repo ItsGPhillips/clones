@@ -1,21 +1,21 @@
-import { faker } from "@faker-js/faker";
 import { Avatar } from "@youtube/components/Avatar";
-import { EllipsisIcon } from "@youtube/icons/EllipsisIcon";
 import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { CommentReplies } from "../RepliesButton";
 import { ClientStateProvider } from "./ClientStateProvider";
 import { CommentMenu } from "./Menu";
+import { CommentInfo } from "@youtube/supabase";
 
-export const Comment = () => {
-   const paras = faker.lorem.sentence();
+export const Comment = (props: { comment: CommentInfo }) => {
    return (
       <ClientStateProvider>
          <div className="h-fit w-fit">
-            <Avatar firstName="test" imageUrl={null} />
+            <Avatar firstName={props.comment.channel_name} imageUrl={null} />
          </div>
-         <div className="flex flex-1 flex-col items-start gap-1">
-            <span className="text-xs font-bold">Test User</span>
-            {paras.split("\n").map((p) => (
+         <div className="flex flex-1 flex-col items-start gap-1 pr-16">
+            <span className="text-xs font-bold">
+               {props.comment.channel_name}
+            </span>
+            {props.comment.body.split("\n").map((p) => (
                <p key={p} className="max-w-5xl text-sm">
                   {p}
                </p>
@@ -28,7 +28,10 @@ export const Comment = () => {
                <LikeIcon fill="white" className="h-6 w-6 rotate-180" />
                <span className="ml-4 text-xs font-bold">Reply</span>
             </div>
-            <CommentReplies />
+            <CommentReplies
+               commendId={props.comment.id}
+               videoId={props.comment.video_id}
+            />
          </div>
          <CommentMenu />
       </ClientStateProvider>

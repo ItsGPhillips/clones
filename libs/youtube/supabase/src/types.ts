@@ -536,39 +536,117 @@ export interface Database {
         Row: {
           created_at: string
           id: string
+          is_verified: boolean
           name: string
         }
         Insert: {
           created_at?: string
           id?: string
+          is_verified?: boolean
           name: string
         }
         Update: {
           created_at?: string
           id?: string
+          is_verified?: boolean
           name?: string
+        }
+      }
+      yt_comment_vote_actions: {
+        Row: {
+          action: Database["public"]["Enums"]["vote_action"]
+          channel_id: string
+          comment_id: string
+          id: string
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["vote_action"]
+          channel_id: string
+          comment_id: string
+          id: string
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["vote_action"]
+          channel_id?: string
+          comment_id?: string
+          id?: string
+        }
+      }
+      yt_comments: {
+        Row: {
+          body: string
+          channel_id: string
+          created_at: string
+          id: string
+          parent: string | null
+          video_id: string
+        }
+        Insert: {
+          body: string
+          channel_id: string
+          created_at?: string
+          id?: string
+          parent?: string | null
+          video_id: string
+        }
+        Update: {
+          body?: string
+          channel_id?: string
+          created_at?: string
+          id?: string
+          parent?: string | null
+          video_id?: string
+        }
+      }
+      yt_video_likes: {
+        Row: {
+          action: Database["public"]["Enums"]["vote_action"]
+          channel_id: string
+          created_at: string | null
+          id: string
+          video_id: string
+        }
+        Insert: {
+          action: Database["public"]["Enums"]["vote_action"]
+          channel_id: string
+          created_at?: string | null
+          id?: string
+          video_id: string
+        }
+        Update: {
+          action?: Database["public"]["Enums"]["vote_action"]
+          channel_id?: string
+          created_at?: string | null
+          id?: string
+          video_id?: string
         }
       }
       yt_videos: {
         Row: {
           channel_id: string
+          description: string
           id: string
           thumbnail_id: string | null
           title: string
+          upload_date: string
           video_id: string | null
         }
         Insert: {
           channel_id: string
+          description?: string
           id?: string
           thumbnail_id?: string | null
           title: string
+          upload_date?: string
           video_id?: string | null
         }
         Update: {
           channel_id?: string
+          description?: string
           id?: string
           thumbnail_id?: string | null
           title?: string
+          upload_date?: string
           video_id?: string | null
         }
       }
@@ -577,6 +655,30 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      get_comment_info: {
+        Args: {
+          param_video_id: string
+          param_parent_id: string
+        }
+        Returns: {
+          id: string
+          body: string
+          video_id: string
+          created_at: string
+          channel_name: string
+          channel_verified: boolean
+          channel_id: string
+          parent: string
+        }[]
+      }
+      get_random_videos: {
+        Args: {
+          param_count: number
+        }
+        Returns: {
+          id: string
+        }[]
+      }
       get_video_info: {
         Args: {
           param_video_id: string
@@ -584,14 +686,22 @@ export interface Database {
         Returns: {
           title: string
           channel_id: string
+          video_description: string
+          upload_date: string
           channel_name: string
           thumbnail_path: string
           video_path: string
         }[]
       }
+      yt_get_like_count_for_video: {
+        Args: {
+          param_video_id: string
+        }
+        Returns: number
+      }
     }
     Enums: {
-      [_ in never]: never
+      vote_action: "upvote" | "downvote"
     }
     CompositeTypes: {
       [_ in never]: never
