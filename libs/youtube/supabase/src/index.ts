@@ -4,7 +4,7 @@ import { headers, cookies } from "next/headers";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cache } from "react";
 
-export { Database } from "./types";
+export type  { Database } from "./types";
 
 export const createServerComponentClient = () =>
    createServerComponentSupabaseClient<Database>({
