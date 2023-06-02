@@ -9,7 +9,7 @@ const SEARCH_PARAMS_SCHEMA = z.object({
    v: z.string().uuid(),
 });
 
-export default async function WatchPage(props: Record<string, unknown>) {
+export default async function WatchPage(props: { searchParams: any }) {
    const params = SEARCH_PARAMS_SCHEMA.parse(props["searchParams"]);
 
    return (
