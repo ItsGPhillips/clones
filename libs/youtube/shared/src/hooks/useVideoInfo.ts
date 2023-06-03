@@ -1,24 +1,33 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import { PostgrestError, SupabaseClient } from "@supabase/supabase-js";
+
+// @ts-ignore
 import { Database } from "@youtube/supabase";
-import useSWR from "swr";
+// @ts-ignore
+import { UseSuspenseQueryResult, useSuspenseQuery } from "@shared/ReactQuery";
+
+type Data =
+   Database["public"]["Functions"]["get_video_info"]["Returns"][number];
 
 export const useVideoInfo = (
    supabase: SupabaseClient<Database>,
-   videoId?: string
-) => {
-   return useSWR(
-      `video/${videoId}`,
+   videoId: string
+): UseSuspenseQueryResult<Data, PostgrestError> => {
+   return useSuspenseQuery(
+      ["content", "video", videoId],
       async () => {
-         const { data, error } = await supabase.rpc("get_video_info", {
-            param_video_id: videoId!,
+         await new Promise((res) => {
+            setTimeout(res, 2000);
          });
+         const { data, error } = await supabase
+            .rpc("get_video_info", {
+               param_video_id: videoId!,
+            })
+            .single();
          if (error) throw error;
-         return data[0];
+         return data satisfies Data;
       },
       {
-         isPaused() {
-            return !videoId;
-         },
+         suspense: true,
       }
    );
 };

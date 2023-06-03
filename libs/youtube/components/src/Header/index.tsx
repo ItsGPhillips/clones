@@ -1,6 +1,5 @@
 "use client";
 
-import * as Tooltip from "@shared/components/Tooltip";
 import { HoverButton } from "@youtube/components/HoverButton";
 import { CreateIcon } from "@youtube/icons/CreateIcon";
 import { HeaderSearchInput } from "./HeaderSearchInput";
@@ -12,6 +11,8 @@ import { useMediaQuery } from "usehooks-ts";
 import { FiSearch } from "react-icons/fi";
 import { useButton } from "@react-aria/button";
 import { useRef } from "react";
+
+import { TooltipContainer } from "@shared/components/Tooltip";
 
 const SmallScreenSearchButton: React.FC<{ setSearchIsOpen: () => void }> = (
    props
@@ -42,7 +43,7 @@ const SmallScreenHeader = (props: { contryCode: string }) => {
          {/* Left Side */}
          <YoutubeLogoWithSidebarTrigger contryCode={props.contryCode} />
          {/* Search */}
-         <SmallScreenSearchButton setSearchIsOpen={() => {}}/>
+         <SmallScreenSearchButton setSearchIsOpen={() => {}} />
          {/* User Section */}
          <Avatar
             firstName="George"
@@ -71,24 +72,19 @@ export const Header = (props: { contryCode: string }) => {
          </div>
          {/* User Section */}
          <div className="isolate flex w-fit items-center gap-5">
-            <Tooltip.Root tooltip="Create" defaultTooltip>
-               <Tooltip.Trigger asChild>
-                  <HoverButton className="h-10 w-10 p-2">
-                     <CreateIcon fill="white" className="" />
-                  </HoverButton>
-               </Tooltip.Trigger>
-            </Tooltip.Root>
-            {/* --- */}
-            <Tooltip.Root tooltip="Notifications" defaultTooltip>
-               <Tooltip.Trigger asChild>
-                  <HoverButton className="h-10 w-10 p-2">
-                     <AiOutlineBell
-                        className="h-full w-full scale-90"
-                        fill="white"
-                     />
-                  </HoverButton>
-               </Tooltip.Trigger>
-            </Tooltip.Root>
+            <TooltipContainer tooltip="Create">
+               <HoverButton className="h-10 w-10 p-2">
+                  <CreateIcon fill="white" className="" />
+               </HoverButton>
+            </TooltipContainer>
+            <TooltipContainer tooltip="Notifications">
+               <HoverButton className="h-10 w-10 p-2">
+                  <AiOutlineBell
+                     className="h-full w-full scale-90"
+                     fill="white"
+                  />
+               </HoverButton>
+            </TooltipContainer>
             <Avatar
                firstName="George"
                lastName="Phillips"

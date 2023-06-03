@@ -3,6 +3,7 @@ import { VideoCardThumbnail } from "./VideoCardThumbnail";
 import { useSupabase } from "../Supabase";
 import Link from "next/link";
 import { useVideoInfo } from "@youtube/shared/hooks/useVideoInfo";
+import { ComponentProps, Suspense } from "react";
 
 const PREFIX =
    "https://boydmgzwehvxxvydovbv.supabase.co/storage/v1/object/public/youtube";
@@ -11,12 +12,9 @@ export const revalidate = 0;
 
 export const VideoCard: React.FC<{ videoId: string }> = (props) => {
    const { supabase } = useSupabase();
-   const { data, isLoading } = useVideoInfo(supabase, props.videoId);
-   if (isLoading) {
-      return <>Loading...</>;
-   }
+   const { data, error } = useVideoInfo(supabase, props.videoId);
 
-   if (data === undefined) {
+   if (error) {
       return <>Error</>;
    }
 
@@ -44,5 +42,15 @@ export const VideoCard: React.FC<{ videoId: string }> = (props) => {
             </div>
          </div>
       </Link>
+   );
+};
+
+export const VideoCardWithSuspense = (
+   props: ComponentProps<typeof VideoCard>
+) => {
+   return (
+      <Suspense fallback={"loading..."}>
+         <VideoCard {...props} />
+      </Suspense>
    );
 };

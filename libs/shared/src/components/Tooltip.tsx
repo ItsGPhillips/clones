@@ -1,68 +1,88 @@
 'use client';
+import React, { ComponentProps, useRef } from 'react';
+import { mergeProps, mergeRefs } from '@react-aria/utils';
+import { cn } from '@shared/utils/cn';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useTooltip, useTooltipTrigger } from '@react-aria/tooltip';
+import {
+  TooltipTriggerProps,
+  TooltipTriggerState,
+  useTooltipTriggerState,
+} from '@react-stately/tooltip';
+import { useElementSize } from 'usehooks-ts';
 
-import React, { ComponentProps } from 'react';
-import * as RadixToolip from '@radix-ui/react-tooltip';
-import { cn } from '../utils/cn';
-
-/**
- * Wraps all the radix components and makes them client components
- */
-
-export const Provider: React.FC<ComponentProps<typeof RadixToolip.Provider>> = (
-  props
-) => {
-  return (
-    <RadixToolip.Provider {...props}>{props.children}</RadixToolip.Provider>
-  );
-};
-
-export const Root: React.FC<
-  ComponentProps<typeof RadixToolip.Root> & {
-    tooltip: React.ReactNode;
-    defaultTooltip?: boolean;
+export const Tooltip: React.FC<
+  ComponentProps<'div'> & {
+    triggerState: TooltipTriggerState;
+    triggerBounds: ReturnType<typeof useElementSize>[1];
   }
-> = ({ tooltip, defaultTooltip, ...props }) => {
+> = ({ triggerState, triggerBounds, ...props }) => {
+  const { tooltipProps } = useTooltip(props, triggerState);
+
   return (
-    <RadixToolip.Root {...props}>
+    <motion.div
+      initial={{
+        translateX: `calc(${triggerBounds.width / 2}px - 50%)`,
+        opacity: 0,
+        y: -5,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: -5,
+      }}
+      transition={{
+        duration: 0.1,
+        ease: 'easeInOut',
+      }}
+      className={cn(
+        'pointer-events-none absolute !z-[9999] mt-3 rounded-md bg-neutral-500 p-2 text-xs whitespace-nowrap',
+        props.className
+      )}
+      {...(tooltipProps as any)}
+    >
       {props.children}
-      <Content tooltip={tooltip} defaultTooltip={defaultTooltip} />
-    </RadixToolip.Root>
+    </motion.div>
   );
 };
 
-export const Trigger: React.FC<ComponentProps<typeof RadixToolip.Trigger>> = (
-  props
-) => {
-  return <RadixToolip.Trigger {...props}>{props.children}</RadixToolip.Trigger>;
-};
+export const TooltipContainer: React.FC<
+  {
+    children: React.ReactElement<any>;
+    className?: string;
+    tooltip: string;
+  } & TooltipTriggerProps
+> = ({ className, children, tooltip, ...props }) => {
+  if (props.delay === undefined) {
+    props.delay = 50;
+  }
 
-export const Portal = (props: ComponentProps<typeof RadixToolip.Portal>) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [mref, bounds] = useElementSize();
+  const state = useTooltipTriggerState();
+  const { tooltipProps, triggerProps } = useTooltipTrigger(props, state, ref);
+  const newProps = mergeProps(children.props, {
+    ...triggerProps,
+    ref: mergeRefs(mref, ref),
+  });
+
   return (
-    <RadixToolip.Portal container={document.body} {...props}>
-      {props.children}
-    </RadixToolip.Portal>
+    <div className={cn('relative', className)}>
+      {React.cloneElement(children, newProps)}
+      <AnimatePresence>
+        {state.isOpen && (
+          <Tooltip
+            triggerState={state}
+            {...tooltipProps}
+            triggerBounds={bounds}
+          >
+            {tooltip}
+          </Tooltip>
+        )}
+      </AnimatePresence>
+    </div>
   );
-};
-
-export const Content: React.FC<
-  Omit<ComponentProps<typeof RadixToolip.Content>, 'children' | 'asChild'> & {
-    tooltip: React.ReactNode;
-    defaultTooltip?: boolean;
-  }
-> = (props) => {
-  if (props.defaultTooltip) {
-    return (
-      <RadixToolip.Content {...props} asChild>
-        <div
-          className={cn(
-            'relative !z-[9999] mt-3 rounded-md bg-neutral-500 p-2 text-xs',
-            'animate-in fade-in-10'
-          )}
-        >
-          {props.tooltip}
-        </div>
-      </RadixToolip.Content>
-    );
-  }
-  return <>{props.tooltip}</>;
 };

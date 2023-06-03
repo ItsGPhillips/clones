@@ -8,7 +8,7 @@ export default async function Index() {
          <Sidebar />
          {/* --- */}
          <div className="relative mx-0 md:mx-[4%] flex flex-1 flex-col items-stretch justify-start">
-            <KeywordLinks />
+            {/* <KeywordLinks /> */}
             {/* @ts-expect-error Server Component */}
             <ContentSection />
          </div>

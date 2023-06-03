@@ -1,10 +1,10 @@
 import "./global.css";
 import { headers as Headers } from "next/headers";
 import { cn } from "@shared/utils/cn";
-import * as Tooltip from "@shared/components/Tooltip";
 import { env } from "@youtube/env";
 import { Header } from "@youtube/components/Header";
 import SupabaseProvider from "@youtube/components/Supabase";
+import { ClientReactQueryProvider } from "@shared/ReactQuery";
 
 import { Roboto } from "next/font/google";
 import { createServerComponentClient } from "@youtube/supabase";
@@ -53,12 +53,12 @@ export default async function RootLayout({
             suppressHydrationWarning={true}
          >
             <SupabaseProvider session={session}>
-               <Tooltip.Provider delayDuration={100}>
+               <ClientReactQueryProvider>
                   <Header contryCode={contryCode} />
                   <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
                      {children}
                   </div>
-               </Tooltip.Provider>
+               </ClientReactQueryProvider>
             </SupabaseProvider>
          </body>
       </html>

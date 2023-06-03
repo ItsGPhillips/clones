@@ -4,11 +4,11 @@ import { cn } from "@shared/utils/cn";
 import { HoverButton } from "../HoverButton";
 import { BiMicrophone } from "react-icons/bi";
 import { FiSearch } from "react-icons/fi";
-import * as Tooltip from "@shared/components/Tooltip";
 import useResizeObserver from "use-resize-observer";
 import { SearchResultsPanel } from "./SearchResultsPanel";
 import { useFocusWithin } from "@react-aria/interactions";
 import { useState } from "react";
+import { TooltipContainer } from "@shared/components/Tooltip";
 
 const useHeaderSearchInputState = () => {
    const [searchResultsOpen, setSearchResultsOpen] = useState<boolean>(false);
@@ -54,7 +54,7 @@ export const HeaderSearchInput: React.FC = () => {
       useHeaderSearchInputState();
 
    return (
-      <div className="flex flex-1 grow flex-row items-stretch">
+      <div className="flex h-10 flex-1 grow flex-row items-stretch">
          <div
             className="relative flex w-fit grow items-stretch"
             {...focusWithinProps}
@@ -85,16 +85,11 @@ export const HeaderSearchInput: React.FC = () => {
          >
             <FiSearch className="" />
          </div>
-         <Tooltip.Root tooltip="Search with your voice" defaultTooltip>
-            <Tooltip.Trigger asChild>
-               <HoverButton className="skrink-0 ml-2 h-10 w-10 p-2">
-                  <BiMicrophone
-                     className="h-full w-full scale-90"
-                     fill="white"
-                  />
-               </HoverButton>
-            </Tooltip.Trigger>
-         </Tooltip.Root>
+         <TooltipContainer tooltip="Search with your voice">
+            <HoverButton className="skrink-0 ml-2 h-10 w-10 p-2">
+               <BiMicrophone className="h-full w-full scale-90" fill="white" />
+            </HoverButton>
+         </TooltipContainer>
       </div>
    );
 };

@@ -5,7 +5,6 @@ const PREFIX =
 
 export const VideoPlayer = async (props: { videoId: string }) => {
    const data = await serverGetVideoData(props.videoId);
-
    return (
       <div className="relative w-full overflow-hidden rounded-xl">
          <video
