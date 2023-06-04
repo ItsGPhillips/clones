@@ -1,3 +1,5 @@
+"use client";
+
 //--- icons
 import { HomeIcon } from "@youtube/icons/HomeIcon";
 import { SubscriptionsIcon } from "@youtube/icons/SubscriptionsIcon";
@@ -35,7 +37,7 @@ import { SidebarChannelLink } from "./SidebarChannelLink";
 const Seperator = forwardRef<HTMLHRElement, ComponentProps<"hr">>(
    (props, ref) => {
       return (
-         <hr {...props} className="border-white/20">
+         <hr ref={ref} {...props} className="border-white/20">
             {props.children}
          </hr>
       );
@@ -53,16 +55,9 @@ const Group: React.FC<PropsWithChildren<{ title?: string }>> = (props) => {
    );
 };
 
-import { faker } from "@faker-js/faker";
 import { YoutubeLogoWithSidebarTrigger } from "./YoutubeLogoSection";
-const TMP_SUBSCRIPTIONS = Array(14)
-   .fill(null)
-   .map(() => {
-      return {
-         channel: faker.person.fullName(),
-         url: "",
-      };
-   });
+import { useSupabase } from "../Supabase";
+import { useQuery } from "@tanstack/react-query";
 
 const FOOTER_LINKS = {
    info: [
@@ -83,10 +78,29 @@ const FOOTER_LINKS = {
    ],
 } as const;
 
-export const SidebarContent: React.FC<{
+export const SidebarContent = (props: {
    includeLogo?: boolean;
    countryCode?: string;
-}> = (props) => {
+}) => {
+   const { supabase } = useSupabase();
+   const { data: subscriptions, error } = useQuery(
+      ["subscriptions"],
+      async () => {
+         const { data, error } = await supabase.rpc("get_channel_subscriptions", {
+            param_channel_id: "005599ae-f648-4a3a-91d0-d9450ea2d096"
+         });
+
+         if (error) {
+            throw error;
+         }
+         return data;
+      }
+   );
+
+   if (error) {
+      throw error;
+   }
+
    return (
       <>
          {props.includeLogo && (
@@ -139,12 +153,12 @@ export const SidebarContent: React.FC<{
                </Group>
                <Seperator />
                <Group title="Subscriptions">
-                  {TMP_SUBSCRIPTIONS.map(({ channel, url }) => {
+                  {subscriptions?.slice(0, 14).map(({channel_id, channel_name}) => {
                      return (
                         <SidebarChannelLink
-                           key={channel}
-                           channel={channel}
-                           href={url}
+                           key={channel_id}
+                           channel={channel_name}
+                           id={channel_id}
                         />
                      );
                   })}
@@ -231,7 +245,7 @@ export const SidebarContent: React.FC<{
                   <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.info.map(({ label, href }) => {
                         return (
-                           <Link className="mr-1 text-white/70" href={href}>
+                           <Link className="mr-1 text-white/70" href={href} key={label}>
                               {label}
                            </Link>
                         );
@@ -240,7 +254,7 @@ export const SidebarContent: React.FC<{
                   <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.terms.map(({ label, href }) => {
                         return (
-                           <Link className="mr-1 text-white/70" href={href}>
+                           <Link className="mr-1 text-white/70" href={href} key={label}>
                               {label}
                            </Link>
                         );

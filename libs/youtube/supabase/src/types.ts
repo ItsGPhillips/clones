@@ -598,6 +598,23 @@ export interface Database {
           video_id?: string
         }
       }
+      yt_subscriptions: {
+        Row: {
+          channel_id: string
+          id: string
+          subscriber_channel_id: string
+        }
+        Insert: {
+          channel_id: string
+          id: string
+          subscriber_channel_id: string
+        }
+        Update: {
+          channel_id?: string
+          id?: string
+          subscriber_channel_id?: string
+        }
+      }
       yt_video_likes: {
         Row: {
           action: Database["public"]["Enums"]["vote_action"]
@@ -625,6 +642,7 @@ export interface Database {
         Row: {
           channel_id: string
           description: string
+          duration: number | null
           id: string
           thumbnail_id: string | null
           title: string
@@ -634,6 +652,7 @@ export interface Database {
         Insert: {
           channel_id: string
           description?: string
+          duration?: number | null
           id?: string
           thumbnail_id?: string | null
           title: string
@@ -643,6 +662,7 @@ export interface Database {
         Update: {
           channel_id?: string
           description?: string
+          duration?: number | null
           id?: string
           thumbnail_id?: string | null
           title?: string
@@ -655,6 +675,21 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      get_channel_subscription_count: {
+        Args: {
+          param_channel_id: string
+        }
+        Returns: number
+      }
+      get_channel_subscriptions: {
+        Args: {
+          param_channel_id: string
+        }
+        Returns: {
+          channel_id: string
+          channel_name: string
+        }[]
+      }
       get_comment_info: {
         Args: {
           param_video_id: string
@@ -673,10 +708,10 @@ export interface Database {
       }
       get_random_videos: {
         Args: {
-          param_count: number
+          param_num_videos: number
         }
         Returns: {
-          id: string
+          video_id: string
         }[]
       }
       get_video_info: {
@@ -687,6 +722,7 @@ export interface Database {
           title: string
           channel_id: string
           video_description: string
+          video_duration: number
           upload_date: string
           channel_name: string
           thumbnail_path: string

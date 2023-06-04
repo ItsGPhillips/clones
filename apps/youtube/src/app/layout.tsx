@@ -9,6 +9,8 @@ import { ClientReactQueryProvider } from "@shared/ReactQuery";
 import { Roboto } from "next/font/google";
 import { createServerComponentClient } from "@youtube/supabase";
 
+import { SSRProvider } from "@shared/components/SSRProvider";
+
 const roboto = Roboto({
    subsets: ["latin"],
    weight: ["400", "100", "300", "700"],
@@ -52,14 +54,16 @@ export default async function RootLayout({
             )}
             suppressHydrationWarning={true}
          >
-            <SupabaseProvider session={session}>
-               <ClientReactQueryProvider>
-                  <Header contryCode={contryCode} />
-                  <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
-                     {children}
-                  </div>
-               </ClientReactQueryProvider>
-            </SupabaseProvider>
+            <SSRProvider>
+               <SupabaseProvider session={session}>
+                  <ClientReactQueryProvider>
+                     <Header contryCode={contryCode} />
+                     <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
+                        {children}
+                     </div>
+                  </ClientReactQueryProvider>
+               </SupabaseProvider>
+            </SSRProvider>
          </body>
       </html>
    );

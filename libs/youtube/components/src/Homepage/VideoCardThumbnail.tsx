@@ -7,9 +7,12 @@ import { useState, useRef } from "react";
 import NextImage from "next/image";
 import useMeasure from "react-use-measure";
 
+function fmtMSS(s: number){return(s-(s%=60))/60+(9<s?':':':0')+s}
+
 export const VideoCardThumbnail: React.FC<{
    thumbnailUrl: string;
    videoUrl: string;
+   duration: number;
 }> = (props) => {
    const videoRef = useRef<HTMLVideoElement | null>(null);
    const videoCurrentTime = useRef<number>(0);
@@ -57,6 +60,7 @@ export const VideoCardThumbnail: React.FC<{
                <div className="flex h-full w-full items-center justify-center bg-black">
                   <video
                      ref={videoRef}
+                     
                      controls
                      autoPlay
                      onPause={(e) => {
@@ -85,7 +89,7 @@ export const VideoCardThumbnail: React.FC<{
                />
                {/* <NextImage src={image.current} alt="" fill /> */}
                <span className="bg-dark-800/80 absolute right-0 bottom-0 m-2 rounded p-1 text-xs">
-                  12:34
+                 {fmtMSS(props.duration)}
                </span>
             </>
          )}

@@ -6,15 +6,18 @@ import {
    ForwardedRef,
    PropsWithChildren,
    forwardRef,
+   useMemo,
    useRef,
    useState,
 } from "react";
-import { VideoCardWithSuspense } from "./VideoCard";
+import { VideoCard, VideoCardWithSuspense } from "./VideoCard";
 import useMeasure from "react-use-measure";
 import { useIsomorphicLayoutEffect } from "framer-motion";
 import { useButton } from "@react-aria/button";
 import { DownChevronIcon } from "@youtube/icons/DownChevronIcon";
 import { TooltipContainer } from "@shared/components/Tooltip";
+import { useSupabase } from "../Supabase";
+import { useQuery } from "@tanstack/react-query";
 
 type Role = "recommended" | "breaking-news" | "subscriptions" | "movies";
 
@@ -47,34 +50,25 @@ const Test = forwardRef(
 );
 
 const ShowMoreButton: React.FC = () => {
-   const portalRef = useRef<HTMLDivElement>(null);
    const ref = useRef<HTMLButtonElement>(null);
    const { buttonProps } = useButton(
       {
          onPress() {
-            console.log("test");
+            console.log("Show more");
          },
       },
       ref
    );
    return (
-      <></>
-      // <Tooltip.Root delayDuration={500}>
-      //    <Tooltip.Trigger className="h-10 w-0 border-2">
-      //       {/* <button
-      //             ref={ref}
-      //             className="flex  items-center justify-center border-2 outline-none transition-colors duration-100 hover:bg-white/20"
-      //             {...buttonProps}
-      //          >
-      //             <DownChevronIcon fill="white" className="h-6 w-6" />
-      //          </button> */}
-      //    </Tooltip.Trigger>
-
-      //    <PrimaryTooltip
-      //       text="see more"
-      //       className="border-2 border-purple-400"
-      //    />
-      // </Tooltip.Root>
+      <TooltipContainer tooltip="See more" closeDelay={50} className="h-10">
+         <button
+            ref={ref}
+            className="flex h-full w-full items-center justify-center outline-none transition-colors duration-100 hover:bg-white/20"
+            {...buttonProps}
+         >
+            <DownChevronIcon fill="white" className="h-6 w-6" />
+         </button>
+      </TooltipContainer>
    );
 };
 
@@ -88,73 +82,54 @@ export const ContentRow: React.FC<
       role: Role;
    }>
 > = (props) => {
-   const [elements, setElements] = useState<React.ReactElement[]>([]);
+   const { supabase } = useSupabase();
    const [ref, bounds] = useMeasure();
-   useIsomorphicLayoutEffect(() => {
+
+   const { data } = useQuery(
+      ["content", "random_videos", props.role],
+      async () => {
+         const { data, error } = await supabase.rpc("get_random_videos", {
+            param_num_videos: 4,
+         });
+         if (error) throw error;
+         return data;
+      },
+      {
+         cacheTime: Infinity,
+         staleTime: Infinity,
+      }
+   );
+
+
+   const what = useMemo(() => {
+      return data?.map(id => {
+         return (
+            <VideoCardWithSuspense
+               key={id.video_id}
+               videoId={id.video_id}
+            />
+         )
+      }) ?? []
+   }, [data?.length ?? 0]);
+
+   const numVideos = (() => {
       if (bounds.width > 1200) {
-         setElements([
-            <VideoCardWithSuspense
-               key={1}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={2}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={3}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={4}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-         ]);
-         return;
+         return 4;
       }
       if (bounds.width > 900) {
-         setElements([
-            <VideoCardWithSuspense
-               key={1}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={2}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={3}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-         ]);
-         return;
+         return 3;
       }
       if (bounds.width > 520) {
-         setElements([
-            <VideoCardWithSuspense
-               key={1}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-            <VideoCardWithSuspense
-               key={2}
-               videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-            />,
-         ]);
-         return;
+         return 2;
       }
-      setElements([
-         <VideoCardWithSuspense
-            key={1}
-            videoId="ea634cf9-4143-4845-ad86-105dce412bf7"
-         />,
-      ]);
-   }, [bounds.width]);
+      return 1;
+   })();
 
    return (
-      <div className="flex flex-1 flex-col border-2 border-green-400" ref={ref}>
+      <div className="flex flex-1 flex-col" ref={ref}>
          {mapRoleToLabel(props.role)}
          <div className={cn("flex h-80 justify-center gap-4 text-white")}>
-            <>{elements}</>
+            {what.slice(0, numVideos)}
          </div>
          <ShowMoreButton />
          <Seperator />

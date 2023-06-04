@@ -48,14 +48,14 @@ const ActualThing = async (props: { videoId: string }) => {
 export const Recomendations = async () => {
    const supabase = createServerComponentClient();
    const { data } = await supabase.rpc("get_random_videos", {
-      param_count: 10,
+      param_num_videos: 10,
    });
    return (
       <div className="flex h-full w-full flex-col gap-3">
          {/* <KeywordLinks /> */}
-         {data?.map(({ id }) => {
+         {data?.map(({ video_id }) => {
             /* @ts-expect-error */
-            return <ActualThing videoId={id} />;
+            return <ActualThing videoId={video_id} />;
          })}
       </div>
    );

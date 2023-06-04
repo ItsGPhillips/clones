@@ -42,5 +42,8 @@ export const serverGetVideoData = async (videoId: string) => {
    const { data: likes } = await supabase.rpc("yt_get_like_count_for_video", {
       param_video_id: videoId,
    });
-   return { ...videoData, likes };
+   const { data: subscriber_count } = await supabase.rpc("get_channel_subscription_count", {
+      param_channel_id: videoData.channel_id,
+   });
+   return { ...videoData, likes, subscriber_count};
 };

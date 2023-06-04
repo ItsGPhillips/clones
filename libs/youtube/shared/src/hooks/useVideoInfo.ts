@@ -10,14 +10,12 @@ type Data =
 
 export const useVideoInfo = (
    supabase: SupabaseClient<Database>,
-   videoId: string
+   videoId?: string
 ): UseSuspenseQueryResult<Data, PostgrestError> => {
    return useSuspenseQuery(
       ["content", "video", videoId],
       async () => {
-         await new Promise((res) => {
-            setTimeout(res, 2000);
-         });
+         console.log("fetching");
          const { data, error } = await supabase
             .rpc("get_video_info", {
                param_video_id: videoId!,
@@ -27,6 +25,7 @@ export const useVideoInfo = (
          return data satisfies Data;
       },
       {
+         enabled: !!videoId,
          suspense: true,
       }
    );

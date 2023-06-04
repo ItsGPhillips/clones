@@ -106,6 +106,7 @@ function generate() {
                   video_id: video.videoId,
                   channel_id: channel.id,
                   thumbnail_id: video.thumbnailId,
+                  duration: 0,
                   description: faker.lorem.paragraphs({
                      min: 0,
                      max: 5,
@@ -313,9 +314,80 @@ async function main_02() {
    }
 }
 
+const main_03 = async () => {
+   const { data } = await db.from("yt_videos").select();
+   for (const video of data ?? []) {
+      // computer vid
+      if (video.video_id === "e190e9a1-b3f9-4840-8c57-8c7312595e68") {
+         Log.info(`found: ${video.video_id}`);
+         const { error } = await db
+            .from("yt_videos")
+            .update({ duration: 66 })
+            .eq("video_id", video.video_id);
+         if (error) {
+            Log.error(error);
+            throw error;
+         }
+         continue;
+      }
+      // screen test
+      if (video.video_id === "c7de5239-853f-4f40-8a83-6f2dec753453") {
+         Log.info(`found: ${video.video_id}`);
+         const { error } = await db
+            .from("yt_videos")
+            .update({ duration: 899 })
+            .eq("video_id", video.video_id);
+         if (error) {
+            Log.error(error);
+            throw error;
+         }
+         continue;
+      }
+   }
+};
+
+const main_04 = async () => {
+   const { data, error } = await db.from("yt_channel").select();
+   if (error) {
+      Log.error(error);
+      throw error;
+   }
+
+   const subscriptions = data
+      .map((channel) => {
+         const subscribers = new Set<string>();
+         const numVoters = Math.round(Math.random() * data.length);
+         while (subscribers.size < numVoters) {
+            const id = data[Math.floor(Math.random() * data.length)]?.id;
+            if (id) {
+               subscribers.add(id);
+            }
+         }
+
+         return Array.from(subscribers.values()).map((subscriber) => {
+            return {
+               id: uuidv4(),
+               channel_id: channel.id,
+               subscriber_channel_id: subscriber,
+            };
+         });
+      })
+      .flat();
+
+   const { error: subscriptions_err } = await db
+      .from("yt_subscriptions")
+      .insert(subscriptions);
+   if (subscriptions_err) {
+      Log.error(subscriptions_err);
+      throw subscriptions_err;
+   }
+};
+
 async function main() {
    // await main_01()
-   await main_02();
+   // await main_02();
+   // await main_03();
+   await main_04();
 }
 
 main();

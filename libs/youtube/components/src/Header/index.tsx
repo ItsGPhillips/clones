@@ -72,12 +72,12 @@ export const Header = (props: { contryCode: string }) => {
          </div>
          {/* User Section */}
          <div className="isolate flex w-fit items-center gap-5">
-            <TooltipContainer tooltip="Create">
+            <TooltipContainer tooltip="Create" delay={100}>
                <HoverButton className="h-10 w-10 p-2">
                   <CreateIcon fill="white" className="" />
                </HoverButton>
             </TooltipContainer>
-            <TooltipContainer tooltip="Notifications">
+            <TooltipContainer tooltip="Notifications" delay={100}>
                <HoverButton className="h-10 w-10 p-2">
                   <AiOutlineBell
                      className="h-full w-full scale-90"

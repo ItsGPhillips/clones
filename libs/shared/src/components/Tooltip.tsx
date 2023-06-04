@@ -56,14 +56,12 @@ export const TooltipContainer: React.FC<
     tooltip: string;
   } & TooltipTriggerProps
 > = ({ className, children, tooltip, ...props }) => {
-  if (props.delay === undefined) {
-    props.delay = 50;
-  }
-
+  
   const ref = useRef<HTMLDivElement>(null);
   const [mref, bounds] = useElementSize();
-  const state = useTooltipTriggerState();
+  const state = useTooltipTriggerState(props);
   const { tooltipProps, triggerProps } = useTooltipTrigger(props, state, ref);
+
   const newProps = mergeProps(children.props, {
     ...triggerProps,
     ref: mergeRefs(mref, ref),

@@ -24,10 +24,12 @@ export const VideoInfo = async (props: { videoId: string }) => {
             <div className="flex items-center gap-2">
                <Avatar firstName={videoData.channel_name} imageUrl={null} />
                <div className="flex flex-col">
-                  <span className="text-sm font-bold">
+                  <span className="whitespace-nowrap text-sm font-bold">
                      {videoData.channel_name}
                   </span>
-                  <span className="text-xs text-white/80">0 subscribers</span>
+                  <span className="whitespace-nowrap text-xs text-white/80">
+                     {videoData.subscriber_count} subscribers
+                  </span>
                </div>
             </div>
             <button className="ml-6 flex h-10 items-center justify-center place-self-center rounded-full bg-white py-3 px-4 text-sm font-bold text-black">
@@ -72,7 +74,7 @@ export const VideoInfo = async (props: { videoId: string }) => {
          />
          <a
             href="https://support.google.com/youtube/answer/2797468?hl=en-GB"
-            className="text-sm text-blue-400 mt-2 hover:cursor-pointer hover:underline"
+            className="mt-2 text-sm text-blue-400 hover:cursor-pointer hover:underline"
          >
             Licence - Creative Commons | Public Domain
          </a>
@@ -88,7 +90,7 @@ const CommentSection = async (props: { videoId: string }) => {
    const supabase = createServerComponentClient();
    const { data } = await supabase.rpc("get_comment_info", {
       param_video_id: props.videoId,
-      param_parent_id: "",
+      param_parent_id: "", // HACK: empty string to make Postgres happy
    });
 
    return (

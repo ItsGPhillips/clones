@@ -85,7 +85,7 @@ export const HeaderSearchInput: React.FC = () => {
          >
             <FiSearch className="" />
          </div>
-         <TooltipContainer tooltip="Search with your voice">
+         <TooltipContainer tooltip="Search with your voice" delay={100}>
             <HoverButton className="skrink-0 ml-2 h-10 w-10 p-2">
                <BiMicrophone className="h-full w-full scale-90" fill="white" />
             </HoverButton>

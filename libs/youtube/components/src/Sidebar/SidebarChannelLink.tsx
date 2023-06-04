@@ -3,7 +3,7 @@ import { SideBarButton } from "./SideBarButton";
 
 type SidebarChannelLinkProps = {
    channel: string;
-   href: string;
+   id: string;
 };
 
 export const SidebarChannelLink = (props: SidebarChannelLinkProps) => {
