@@ -16,11 +16,9 @@ import {
    useState,
 } from "react";
 import { RefObject } from "react";
-
 import makeCancellable from "make-cancellable-promise";
 import { useHover, useMove, usePress } from "@react-aria/interactions";
 import { mergeProps } from "@react-aria/utils";
-
 import {
    BiFullscreen,
    BiCaptions,
@@ -123,7 +121,7 @@ export const Player: React.FC<{
          <video
             ref={ref}
             key={props.videoId}
-            className="aspect-video max-h-[86vh] w-full bg-black"
+            className=":media-controls:display-none aspect-video max-h-[86vh] w-full bg-black"
             {...mergedProps}
          >
             <source
@@ -164,8 +162,8 @@ const PlayPauseMarker: React.FC<{ isPlaying: boolean }> = (props) => {
       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
          <motion.span
             initial={{ opacity: 0, outlineWidth: "0px" }}
-            animate={{ opacity: [0, 1, 0], outlineWidth: ["0px", "20px"] }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            animate={{ opacity: [0, 1, 0], outlineWidth: ["0px", "16px"] }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
             className="bg-dark-800/70 outline-dark-800/30 flex aspect-square w-20 items-center justify-center rounded-full outline"
          >
             {props.isPlaying ? (
@@ -208,7 +206,7 @@ const VolumeControls: React.FC<{
          currentAnimation.current = animate(
             ref.current,
             { width: "5rem" },
-            { ease: "linear", duration: 0.2 }
+            { ease: [0, 1, 0, 1], duration: 0.2 }
          );
       },
       onHoverEnd() {
@@ -277,6 +275,92 @@ const VolumeControls: React.FC<{
    );
 };
 
+const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
+   props
+) => {
+   const [playheadLength, setPlayheadLength] = useState(0);
+   const [bufferSegments, setBufferSegments] = useState<
+      ReturnType<typeof calculateBufferSegments>
+   >([]);
+
+   const calculateBufferSegments = () => {
+      const duration = props.videoRef.current?.duration ?? 1;
+      return Array(props.videoRef.current?.buffered.length)
+         .fill(null)
+         .map((_, idx) => {
+            const start = props.videoRef.current?.buffered.start(idx) ?? 0;
+            const end = props.videoRef.current?.buffered.end(idx) ?? 0;
+            const style = {
+               right: `${((duration - end) / duration) * 100}%`,
+               left: `${(start / duration) * 100}%`,
+            };
+            return (
+               <div style={style} className="absolute h-full !bg-neutral-400" />
+            );
+         });
+   };
+
+   useEffect(() => {
+      const i = setInterval(() => {
+         const video = props.videoRef.current;
+         if (!video) return;
+
+         setPlayheadLength(video.currentTime / video.duration * 100);
+         setBufferSegments(calculateBufferSegments());
+      }, 1000);
+      return () => clearInterval(i);
+   }, []);
+
+   const { hoverProps, isHovered } = useHover({});
+
+   return (
+      <Slider.Root
+         onValueChange={(n) => {
+            const last = n[n.length - 1] ?? 0;
+            if (props.videoRef.current) {
+               props.videoRef.current.currentTime = last;
+            }
+         }}
+         defaultValue={[0]}
+         min={0}
+         max={props.videoRef.current?.duration ?? 0}
+         step={1}
+         asChild
+      >
+         <motion.div
+            className="absolute bottom-[100%] flex w-full select-none items-center"
+            animate={{ height: isHovered ? "0.8rem" : "0.3rem" }}
+            transition={{ duration: 0.2 }}
+            {...(hoverProps as any)}
+         >
+            <Slider.Track className="relative h-full w-full">
+               <Slider.Range className="absolute h-full w-full grow bg-black/50">
+                  <div className="relative h-[inherit] w-full">
+                     {bufferSegments}
+                     <motion.div
+                        className="absolute left-0 h-full bg-red-600"
+                        animate={{
+                           width: `${playheadLength}%`,
+                        }}
+                     />
+                  </div>
+               </Slider.Range>
+            </Slider.Track>
+            <Slider.Thumb asChild>
+               <motion.div
+                  className="rounded-full bg-red-800 shadow-sm shadow-black outline-none"
+                  animate={{
+                     width: "1rem",
+                     height: "1rem",
+                     scale: isHovered ? 1.2 : 0,
+                  }}
+               />
+            </Slider.Thumb>
+         </motion.div>
+      </Slider.Root>
+   );
+};
+
 const Controls: React.FC<{
    videoRef: RefObject<HTMLVideoElement>;
    isPlaying: boolean;
@@ -287,7 +371,7 @@ const Controls: React.FC<{
 }> = (props) => {
    return (
       <motion.div
-         className="bg-dark-800/80 absolute bottom-0 flex h-12 w-full flex-nowrap px-4"
+         className="bg-dark-800/80 absolute bottom-0 flex h-12 w-full flex-nowrap"
          initial={{ opacity: 0 }}
          animate={{ opacity: 1 }}
          exit={{ opacity: 0 }}
@@ -309,9 +393,9 @@ const Controls: React.FC<{
             </Button>
             <Button onPress={props.controls.togglePlayback}>
                {props.isPlaying ? (
-                  <BiPlay className="h-6 w-6 scale-150" />
-               ) : (
                   <BiPause className="h-6 w-6 scale-150" />
+               ) : (
+                  <BiPlay className="h-6 w-6 scale-150" />
                )}
             </Button>
             <Button
@@ -331,23 +415,35 @@ const Controls: React.FC<{
             <PlaybackMeter videoRef={props.videoRef} />
          </div>
          <div className="ml-auto flex flex-nowrap gap-2">
-            <Button>Auto</Button>
+            {/* <Button>Auto</Button> */}
             <Button>
                <BiCaptions fill="white" className="h-6 w-6" />
             </Button>
             <Button>
                <IoMdSettings fill="white" className="h-6 w-6" />
             </Button>
-            <Button>
+            <Button
+               onPress={() => {
+                  props.videoRef.current?.requestPictureInPicture();
+               }}
+            >
                <RiPictureInPictureFill fill="white" className="h-6 w-6" />
             </Button>
             <Button>
                <BiRectangle fill="white" className="h-6 w-6" />
             </Button>
-            <Button>
+            <Button
+               onPress={() => {
+                  if (!props.videoRef.current) return;
+                  props.videoRef.current.requestFullscreen({
+                     navigationUI: "hide",
+                  });
+               }}
+            >
                <BiFullscreen fill="white" className="h-6 w-6" />
             </Button>
          </div>
+         <PlaybackProgress videoRef={props.videoRef} />
       </motion.div>
    );
 };
