@@ -17,10 +17,8 @@ const roboto = Roboto({
 });
 
 const getContryCode = async (ip: string | null) => {
-   if (ip === null) {
-      ip = `86.${Math.floor(Math.random() * 255)}.${Math.floor(
-         Math.random() * 255
-      )}.${Math.floor(Math.random() * 255)}`;
+   if(ip === null) {
+      return "GB"
    }
    const res = await fetch(
       `${env.IP_GEOLOCATION_API_URL}?apiKey=${env.IP_GEOLOCATION_API_KEY}&ip=${ip}&fields=country_code2`,

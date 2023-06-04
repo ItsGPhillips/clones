@@ -94,6 +94,10 @@ export const SidebarContent = (props: {
             throw error;
          }
          return data;
+      },
+      {
+         cacheTime: Infinity,
+         refetchOnWindowFocus: false,
       }
    );
 

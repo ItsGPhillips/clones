@@ -2,17 +2,12 @@
 
 import { cn } from "@shared/utils/cn";
 import {
-   ComponentPropsWithRef,
-   ForwardedRef,
    PropsWithChildren,
-   forwardRef,
    useMemo,
    useRef,
-   useState,
 } from "react";
-import { VideoCard, VideoCardWithSuspense } from "./VideoCard";
+import { VideoCardWithSuspense } from "./VideoCard";
 import useMeasure from "react-use-measure";
-import { useIsomorphicLayoutEffect } from "framer-motion";
 import { useButton } from "@react-aria/button";
 import { DownChevronIcon } from "@youtube/icons/DownChevronIcon";
 import { TooltipContainer } from "@shared/components/Tooltip";
@@ -38,16 +33,6 @@ const mapRoleToLabel = (role: Role): JSX.Element => {
    }
    return <h2 className="mb-6 mt-1 text-xl">{label}</h2>;
 };
-
-const Test = forwardRef(
-   (props: ComponentPropsWithRef<"div">, ref: ForwardedRef<HTMLDivElement>) => {
-      return (
-         <div {...props} ref={ref}>
-            <>TEST</>
-         </div>
-      );
-   }
-);
 
 const ShowMoreButton: React.FC = () => {
    const ref = useRef<HTMLButtonElement>(null);
@@ -100,16 +85,14 @@ export const ContentRow: React.FC<
       }
    );
 
-
    const what = useMemo(() => {
-      return data?.map(id => {
-         return (
-            <VideoCardWithSuspense
-               key={id.video_id}
-               videoId={id.video_id}
-            />
-         )
-      }) ?? []
+      return (
+         data?.map((id) => {
+            return (
+               <VideoCardWithSuspense key={id.video_id} videoId={id.video_id} />
+            );
+         }) ?? []
+      );
    }, [data?.length ?? 0]);
 
    const numVideos = (() => {

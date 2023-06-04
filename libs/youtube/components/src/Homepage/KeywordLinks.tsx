@@ -6,7 +6,7 @@ import useMeasure from "react-use-measure";
 import { HoverButton } from "../HoverButton";
 import { faker } from "@faker-js/faker";
 import { CSSProperties, useRef, useState } from "react";
-import { motion, useAnimate } from "framer-motion";
+import { useAnimate } from "framer-motion";
 
 const NavigateButton: React.FC<{
    direction: "left" | "right";
@@ -58,6 +58,7 @@ export const KeywordLinks: React.FC = () => {
                width: bounds.width,
                height: bounds.height,
             }}
+            suppressHydrationWarning
          >
             <NavigateButton
                direction="left"
