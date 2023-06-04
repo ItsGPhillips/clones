@@ -14,6 +14,7 @@ import {
    useMemo,
    useRef,
    useState,
+   useTransition,
 } from "react";
 import { RefObject } from "react";
 import makeCancellable from "make-cancellable-promise";
@@ -37,6 +38,7 @@ import { AiOutlineStepForward } from "react-icons/ai";
 import { AriaButtonProps, useButton } from "@react-aria/button";
 import * as Slider from "@shared/components/Slider";
 import { fmtMSS } from "@shared/utils/formatMSS";
+import { useDebounce } from "usehooks-ts";
 
 const PREFIX =
    "https://boydmgzwehvxxvydovbv.supabase.co/storage/v1/object/public/youtube";
@@ -74,20 +76,6 @@ export const Player: React.FC<{
       ref.current.currentTime += delta;
       console.log(ref.current.currentTime);
    }, []);
-
-   const controls = useMemo(
-      () => (
-         <Controls
-            videoRef={ref}
-            isPlaying={isPlaying}
-            controls={{
-               setPlayPosition,
-               togglePlayback,
-            }}
-         />
-      ),
-      [isPlaying]
-   );
 
    const { pressProps } = usePress({
       onPress() {
@@ -130,7 +118,16 @@ export const Player: React.FC<{
             />
          </video>
 
-         <AnimatePresence>{controls}</AnimatePresence>
+         <AnimatePresence>
+            <Controls
+               videoRef={ref}
+               isPlaying={isPlaying}
+               controls={{
+                  setPlayPosition,
+                  togglePlayback,
+               }}
+            />
+         </AnimatePresence>
          <PlayPauseMarker key={String(isPlaying)} isPlaying={isPlaying} />
       </div>
    );
@@ -279,13 +276,13 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
    props
 ) => {
    const [playheadLength, setPlayheadLength] = useState(0);
-   const [bufferSegments, setBufferSegments] = useState<
-      ReturnType<typeof calculateBufferSegments>
-   >([]);
+   const [bufferSegments, setBufferSegments] = useState<JSX.Element[]>([]);
+
+   const [_, defered] = useTransition();
 
    const calculateBufferSegments = () => {
       const duration = props.videoRef.current?.duration ?? 1;
-      return Array(props.videoRef.current?.buffered.length)
+      const segments = Array(props.videoRef.current?.buffered.length)
          .fill(null)
          .map((_, idx) => {
             const start = props.videoRef.current?.buffered.start(idx) ?? 0;
@@ -298,6 +295,7 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
                <div style={style} className="absolute h-full !bg-neutral-400" />
             );
          });
+      setBufferSegments(segments);
    };
 
    useEffect(() => {
@@ -305,8 +303,8 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
          const video = props.videoRef.current;
          if (!video) return;
 
-         setPlayheadLength(video.currentTime / video.duration * 100);
-         setBufferSegments(calculateBufferSegments());
+         setPlayheadLength((video.currentTime / video.duration) * 100);
+         defered(calculateBufferSegments);
       }, 1000);
       return () => clearInterval(i);
    }, []);
@@ -315,6 +313,7 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
 
    return (
       <Slider.Root
+         value={[props.videoRef.current?.currentTime ?? 0]}
          onValueChange={(n) => {
             const last = n[n.length - 1] ?? 0;
             if (props.videoRef.current) {
@@ -329,7 +328,7 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
       >
          <motion.div
             className="absolute bottom-[100%] flex w-full select-none items-center"
-            animate={{ height: isHovered ? "0.8rem" : "0.3rem" }}
+            animate={{ height: isHovered ? "0.6rem" : "0.3rem" }}
             transition={{ duration: 0.2 }}
             {...(hoverProps as any)}
          >
@@ -350,9 +349,10 @@ const PlaybackProgress: React.FC<{ videoRef: RefObject<HTMLVideoElement> }> = (
                <motion.div
                   className="rounded-full bg-red-800 shadow-sm shadow-black outline-none"
                   animate={{
-                     width: "1rem",
-                     height: "1rem",
-                     scale: isHovered ? 1.2 : 0,
+                     width: "0.8rem",
+                     height: "0.8rem",
+                     opacity: isHovered ? 1 : 0,
+                     scale: isHovered ? 1.1 : 1,
                   }}
                />
             </Slider.Thumb>
