@@ -55,7 +55,7 @@ export const Recomendations = async () => {
          {/* <KeywordLinks /> */}
          {data?.map(({ video_id }) => {
             /* @ts-expect-error */
-            return <ActualThing videoId={video_id} />;
+            return <ActualThing key={video_id} videoId={video_id} />;
          })}
       </div>
    );
