@@ -10,7 +10,7 @@ export const env = Object.freeze(
       server: {
          IP_GEOLOCATION_API_KEY: z.string(),
          IP_GEOLOCATION_API_URL: z.string().url(),
-         SUPABASE_SECRET_KEY: z.string(),
+         // SUPABASE_SECRET_KEY: z.string(),
       },
       /*
        * Environment variables available on the client (and server).
@@ -18,8 +18,8 @@ export const env = Object.freeze(
        * 💡 You'll get typeerrors if these are not prefixed with NEXT_PUBLIC_.
        */
       client: {
-         NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
-         NEXT_PUBLIC_SUPABASE_URL: z.string(),
+         // NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+         // NEXT_PUBLIC_SUPABASE_URL: z.string(),
       },
       /*
        * Due to how Next.js bundles environment variables on Edge and Client,
@@ -30,10 +30,10 @@ export const env = Object.freeze(
       runtimeEnv: {
          IP_GEOLOCATION_API_KEY: process.env["IP_GEOLOCATION_API_KEY"],
          IP_GEOLOCATION_API_URL: process.env["IP_GEOLOCATION_API_URL"],
-         NEXT_PUBLIC_SUPABASE_ANON_KEY:
-            process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"],
-         NEXT_PUBLIC_SUPABASE_URL: process.env["NEXT_PUBLIC_SUPABASE_URL"],
-         SUPABASE_SECRET_KEY: process.env["SUPABASE_SECRET_KEY"],
+         // NEXT_PUBLIC_SUPABASE_ANON_KEY:
+            // process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"],
+         // NEXT_PUBLIC_SUPABASE_URL: process.env["NEXT_PUBLIC_SUPABASE_URL"],
+         // SUPABASE_SECRET_KEY: process.env["SUPABASE_SECRET_KEY"],
       },
    })
 );

@@ -6,7 +6,6 @@ import { BsCaretRightFill } from "react-icons/bs";
 import { useBoolean } from "usehooks-ts";
 import { Comment } from "./Comment";
 import useSWR from "swr";
-import { useSupabase } from "../Supabase";
 
 export const CommentReplies = (props: {
    commendId: string;
@@ -23,19 +22,19 @@ export const CommentReplies = (props: {
       ref
    );
 
-   const { supabase } = useSupabase();
-   const { data } = useSWR(`comment/${props.commendId}`, async () => {
-      const { data, error } = await supabase.rpc("get_comment_info", {
-         param_video_id: props.videoId,
-         param_parent_id: props.commendId,
-      });
-      if (error) throw error;
-      return data ?? [];
-   });
+   // const { supabase } = useSupabase();
+   // const { data } = useSWR(`comment/${props.commendId}`, async () => {
+   //    const { data, error } = await supabase.rpc("get_comment_info", {
+   //       param_video_id: props.videoId,
+   //       param_parent_id: props.commendId,
+   //    });
+   //    if (error) throw error;
+   //    return data ?? [];
+   // });
 
    return (
       <>
-         {data && data.length > 0 && (
+         {/* {data && data.length > 0 && (
             <button
                ref={ref}
                className="flex cursor-pointer items-center rounded-full p-3 decoration-blue-400 outline-none hover:bg-blue-500/20"
@@ -59,7 +58,7 @@ export const CommentReplies = (props: {
                   return <Comment comment={comment} />;
                })}
             </div>
-         )}
+         )} */}
       </>
    );
 };

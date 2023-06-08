@@ -1,6 +1,5 @@
 "use client";
 
-import { serverGetVideoData } from "@youtube/supabase";
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
 import { useCallback, useRef, useState } from "react";
 import makeCancellable from "make-cancellable-promise";
@@ -8,9 +7,6 @@ import { usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@react-aria/utils";
 import { BiPause, BiPlay } from "react-icons/bi";
 import { Controls } from "./Controls";
-
-const PREFIX =
-   "https://boydmgzwehvxxvydovbv.supabase.co/storage/v1/object/public/youtube";
 
 const makeCancelableTimeout = (timeout: number) => {
    return makeCancellable(
@@ -21,8 +17,7 @@ const makeCancelableTimeout = (timeout: number) => {
 };
 
 export const Player: React.FC<{
-   videoId: string;
-   data: Awaited<ReturnType<typeof serverGetVideoData>>;
+   videoSrcUrl?: string;
 }> = (props) => {
    const containerRef = useRef<HTMLDivElement>(null);
    const ref = useRef<HTMLVideoElement>(null);
@@ -102,12 +97,12 @@ export const Player: React.FC<{
       >
          <video
             ref={ref}
-            key={props.videoId}
-            className=":media-controls:display-none aspect-video w-full bg-black"
+            key={props.videoSrcUrl}
+            className="aspect-video w-full bg-black"
             {...mergedProps}
          >
             <source
-               src={`${PREFIX}/${props.data?.video_path}`}
+               src={`${props.videoSrcUrl}.webm`}
                type="video/webm"
             />
          </video>

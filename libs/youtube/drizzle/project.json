@@ -1,0 +1,47 @@
+{
+   "name": "youtube-drizzle",
+   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+   "sourceRoot": "libs/youtube/drizzle/src",
+   "projectType": "library",
+   "targets": {
+      "migrate": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/youtube/drizzle",
+            "command": "ts-node --esm ./tools/migrate.ts"
+         }
+      },
+      "generate": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/youtube/drizzle",
+            "command": "npx drizzle-kit generate:pg"
+         }
+      },
+      "push": {
+         "executor": "nx:run-commands",
+         "options": {
+            "cwd": "libs/youtube/drizzle",
+            "command": "npx drizzle-kit push:pg"
+         }
+      },
+      "build": {
+         "executor": "@nx/js:swc",
+         "outputs": ["{options.outputPath}"],
+         "options": {
+            "outputPath": "dist/libs/youtube/drizzle",
+            "main": "libs/youtube/drizzle/src/index.ts",
+            "tsConfig": "libs/youtube/drizzle/tsconfig.lib.json",
+            "assets": ["libs/youtube/drizzle/*.md"]
+         }
+      },
+      "lint": {
+         "executor": "@nx/linter:eslint",
+         "outputs": ["{options.outputFile}"],
+         "options": {
+            "lintFilePatterns": ["libs/youtube/drizzle/**/*.ts"]
+         }
+      }
+   },
+   "tags": []
+}

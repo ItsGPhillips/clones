@@ -21,25 +21,26 @@ export const VolumeControls: React.FC<{
       <BiVolumeFull fill="white" className="h-6 w-6" />
    );
    const [isMuted, setIsMuted] = useState(false);
-   // const [volume, setVolume] = useState<number>(
-   //    props.videoRef.current?.volume ?? 0.5
-   // );
+   
+   const [volume, setVolume] = useState<number>(
+      props.videoRef.current?.volume ?? 0.5
+   );
 
-   // useScrollWheel(
-   //    {
-   //       onScroll(e) {
-   //          if (!props.videoRef.current) return;
-   //          const delta = 1 / e.deltaY;
-   //          const newVolume = Math.max(
-   //             Math.min(props.videoRef.current.volume + delta, 1),
-   //             0
-   //          );
-   //          props.videoRef.current.volume = newVolume;
-   //          console.log(newVolume);
-   //       },
-   //    },
-   //    ref
-   // );
+   useScrollWheel(
+      {
+         onScroll(e) {
+            if (!props.videoRef.current) return;
+            const delta = 1 / e.deltaY;
+            const newVolume = Math.max(
+               Math.min(props.videoRef.current.volume + delta, 1),
+               0
+            );
+            props.videoRef.current.volume = newVolume;
+            console.log(newVolume);
+         },
+      },
+      ref
+   );
 
    // useEffect(() => {
    //    if (!props.videoRef.current) return;

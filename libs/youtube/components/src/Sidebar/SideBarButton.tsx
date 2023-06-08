@@ -28,6 +28,7 @@ export const SideBarButton = forwardRef<HTMLAnchorElement, SideBarButtonProps>(
       });
       return (
          <Link
+            ref={ref}
             className={cn(
                "line transition-color flex h-10 flex-row items-center justify-start duration-75",
                "rounded-xl px-3 py-1 text-sm text-white outline-none",

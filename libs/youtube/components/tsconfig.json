@@ -14,13 +14,13 @@
       "path": "./tsconfig.lib.json"
     },
     {
-      "path": "./../icons/tsconfig.json"
+      "path": "./../icons/tsconfig.lib.json"
     },
     {
-      "path": "./../../shared/tsconfig.json"
+      "path": "./../../shared/tsconfig.lib.json"
     },
     {
-      "path": "./../supabase/tsconfig.json"
+      "path": "./../drizzle/tsconfig.lib.json"
     },
   ],
   "include": [

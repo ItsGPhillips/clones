@@ -1,23 +1,41 @@
-import dotenv from "dotenv";
-import { createClient } from "@supabase/supabase-js";
-import {
-   Channel,
-   Comment,
-   CommentVoteAction,
-   Database,
-   Video,
-   VideoVoteAction,
-} from "@youtube/supabase";
 import { faker } from "@faker-js/faker";
 import { subDays } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 import pino from "pino";
+import type {
+   Channel,
+   Comment,
+   Video,
+   VideoVoteAction,
+   CommentVoteAction,
+   Subscription,
+   View,
+} from "../../drizzle/src/types";
+
+import {
+   Channels,
+   CommentVotes,
+   Comments,
+   Subscriptions,
+   VideoVotes,
+   Videos,
+   Views,
+} from "../../drizzle/src/index";
+
+import { Pool } from "pg";
+import { drizzle } from "drizzle-orm/node-postgres";
 
 const Log = pino({
    transport: {
       target: "pino-pretty",
    },
 });
+
+const pool = new Pool({
+   connectionString: process.env["DATABASE_URL"],
+});
+
+export const db = drizzle(pool);
 
 namespace Utils {
    export const randomDate = (start: Date, end: Date): Date => {
@@ -26,39 +44,20 @@ namespace Utils {
       );
    };
 }
-
-/** Setup */
-Log.info("loading .env");
-const { parsed: env, error } = dotenv.config({ path: ".env" });
-if (error) {
-   throw error;
-}
-if (!env) {
-   throw new Error("dotenv env was undefined");
-}
-
-Log.info("creating supabase client");
-const db = createClient<Database>(
-   env["SUPABASE_URL"]!,
-   env["SUPABASE_SECRET_KEY"]!
-);
-
-/** Main */
-function generate() {
-   // Create all the channels
+const genChannels = (count: number) => {
    Log.info("creating channels");
-   const channels: Array<Channel> = Array(99)
+   const channels: Array<Channel> = Array(count)
       .fill(null)
       .map(() => {
          return {
             id: uuidv4(),
-            is_verified: false,
-            created_at: subDays(new Date(), Math.random() * 1000).toISOString(),
+            isVerified: false,
+            createdAt: subDays(new Date(), Math.random() * 1000).toISOString(),
             name:
                Math.random() > 0.2
                   ? faker.person.fullName()
                   : faker.company.name(),
-         };
+         } satisfies Channel;
       });
 
    // Randomly select 200 o
@@ -72,26 +71,34 @@ function generate() {
             e.id === channel.id;
          })
       ) {
-         channel.is_verified = Boolean(Math.random() > 0.5);
+         channel.isVerified = Boolean(Math.random() > 0.5);
          contentCreators.push(channel);
       }
    }
 
    Log.info("finished creating channels");
 
+   return {
+      channels,
+      contentCreators,
+   };
+};
+
+const genVideos = (channels: Array<Channel>): Array<Video> => {
    const videoData = [
       {
          videoId: "e190e9a1-b3f9-4840-8c57-8c7312595e68",
          thumbnailId: "fbb43656-a27d-46e2-82d7-e43053c4229a",
+         duration: 70,
       },
       {
          videoId: "c7de5239-853f-4f40-8a83-6f2dec753453",
          thumbnailId: "26d41dae-46d9-4c9c-969a-8506bede25e6",
+         duration: 899,
       },
    ];
-
    Log.info("creating videos");
-   const videos: Array<Video> = contentCreators
+   const videos: Array<Video> = channels
       .map((channel) => {
          return Array(Math.round(Math.random() * 10) + 1)
             .fill(null)
@@ -101,27 +108,34 @@ function generate() {
                if (!video) {
                   throw new Error("video was undefined");
                }
+
                return {
                   id: uuidv4(),
-                  video_id: video.videoId,
-                  channel_id: channel.id,
-                  thumbnail_id: video.thumbnailId,
-                  duration: 0,
+                  channelId: channel.id,
                   description: faker.lorem.paragraphs({
                      min: 0,
                      max: 5,
                   }),
+                  duration: video.duration,
+                  thumbnailUrls: [`/assets/thumbnails/${video.thumbnailId}`],
                   title: faker.lorem.sentence(),
-                  upload_date: Utils.randomDate(
-                     new Date(channel.created_at),
+                  uploadDate: Utils.randomDate(
+                     new Date(channel.createdAt),
                      new Date()
                   ).toISOString(),
-               };
+                  url: `/assets/thumbnails/${video.videoId}`,
+               } satisfies Video;
             });
       })
       .flat();
    Log.info("finished creating videos");
+   return videos;
+};
 
+const genComments = (
+   videos: Array<Video>,
+   channels: Array<Channel>
+): Array<Comment> => {
    Log.info("creating comments");
    const comments: Array<Comment> = videos
       .map((video) => {
@@ -130,12 +144,12 @@ function generate() {
             .map(() => {
                return {
                   id: uuidv4(),
-                  channel_id:
+                  channelId:
                      channels[Math.floor(Math.random() * channels.length)]!.id,
-                  video_id:
+                  videoId:
                      videos[Math.floor(Math.random() * videos.length)]!.id,
-                  created_at: Utils.randomDate(
-                     new Date(video.upload_date),
+                  postedAt: Utils.randomDate(
+                     new Date(video.uploadDate),
                      new Date()
                   ).toISOString(),
                   parent: null,
@@ -145,16 +159,16 @@ function generate() {
          const replies = top
             .filter(() => {
                // select 20% of the comments
-               return Math.random() > 0.8;
+               return Math.random() > 0.5;
             })
             .map((comment) => {
                return {
                   id: uuidv4(),
-                  channel_id:
+                  channelId:
                      channels[Math.floor(Math.random() * channels.length)]!.id,
-                  video_id: comment.video_id,
-                  created_at: Utils.randomDate(
-                     new Date(comment.created_at),
+                  videoId: comment.videoId,
+                  postedAt: Utils.randomDate(
+                     new Date(comment.postedAt),
                      new Date()
                   ).toISOString(),
                   parent: comment.id,
@@ -168,6 +182,13 @@ function generate() {
       .flat();
    Log.info("finished creating comments");
 
+   return comments;
+};
+
+const genVideoLikes = (
+   videos: Array<Video>,
+   channels: Array<Channel>
+): Array<VideoVoteAction> => {
    Log.info("creating video votes");
    const videoVoteActions = videos
       .map((video) => {
@@ -182,22 +203,26 @@ function generate() {
          }
          return Array.from(voters.values()).map((channelId) => {
             return {
-               id: uuidv4(),
                action: Math.random() > 0.2 ? "upvote" : "downvote",
-               channel_id: channelId,
-               video_id: video.id,
-               created_at: new Date().toISOString(),
+               channelId: channelId,
+               videoId: video.id,
             } satisfies VideoVoteAction;
          });
       })
       .flat();
    Log.info("finished creating video votes");
+   return videoVoteActions;
+};
 
+const genCommentLikes = (
+   comments: Array<Comment>,
+   channels: Array<Channel>
+): Array<CommentVoteAction> => {
    Log.info("creating comment votes");
    const commentVoteActions = comments
       .map((comment) => {
          const voters = new Set<string>();
-         const numVoters = Math.round(Math.random() * channels.length);
+         const numVoters = Math.round(Math.random() * (channels.length / 2));
          while (voters.size < numVoters) {
             const id =
                channels[Math.floor(Math.random() * channels.length)]?.id;
@@ -207,158 +232,27 @@ function generate() {
          }
          return Array.from(voters.values()).map((channelId) => {
             return {
-               id: uuidv4(),
                action: Math.random() > 0.2 ? "upvote" : "downvote",
-               channel_id: channelId,
-               comment_id: comment.id,
+               channelId: channelId,
+               commentId: comment.id,
             } satisfies CommentVoteAction;
          });
       })
       .flat();
    Log.info("finished creating comment votes");
-
-   return {
-      channels,
-      videos,
-      comments,
-      videoVoteActions,
-      commentVoteActions,
-   };
-}
-
-async function main_01() {
-   Log.info("starting generation");
-   const data = generate();
-   Log.info("completed generation");
-   Log.info("starting database mutations");
-
-   Log.info("inserting channels");
-   const { error: channel_error } = await db
-      .from("yt_channel")
-      .insert(data.channels);
-   if (channel_error) {
-      Log.error(channel_error);
-      throw channel_error;
-   }
-   Log.info("completed inserting channels");
-
-   Log.info("inserting videos");
-   const { error: video_error } = await db
-      .from("yt_videos")
-      .insert(data.videos);
-   if (video_error) {
-      Log.error(video_error);
-      throw video_error;
-   }
-   Log.info("completed inserting videos");
-
-   Log.info("inserting comments");
-   const { error: comments_error } = await db
-      .from("yt_comments")
-      .insert(data.comments);
-   if (comments_error) {
-      Log.error(comments_error);
-      throw comments_error;
-   }
-   Log.info("completed inserting comments");
-
-   Log.info("inserting video vote actions");
-   const { error: va_error } = await db
-      .from("yt_video_likes")
-      .insert(data.videoVoteActions);
-   if (va_error) {
-      Log.error(va_error);
-      throw va_error;
-   }
-   Log.info("completed inserting video vote actions");
-
-   Log.info("inserting comment vote actions");
-   const { error: ca_error } = await db
-      .from("yt_comment_vote_actions")
-      .insert(data.commentVoteActions);
-   if (ca_error) {
-      Log.error(ca_error);
-      throw ca_error;
-   }
-   Log.info("completed inserting comment vote actions");
-
-   Log.info("finished database mutations");
-}
-
-async function main_02() {
-   const { data, error } = await db.from("yt_videos").select("id");
-   if (error) {
-      Log.error(error);
-      throw error;
-   }
-   for (const { id } of data ?? []) {
-      const description = faker.lorem.paragraphs({
-         min: 0,
-         max: 5,
-      });
-      Log.info({
-         id,
-         description,
-      });
-      const { error } = await db
-         .from("yt_videos")
-         .update({
-            description,
-         })
-         .eq("id", id);
-
-      if (error) {
-         Log.error(error);
-         throw error;
-      }
-   }
-}
-
-const main_03 = async () => {
-   const { data } = await db.from("yt_videos").select();
-   for (const video of data ?? []) {
-      // computer vid
-      if (video.video_id === "e190e9a1-b3f9-4840-8c57-8c7312595e68") {
-         Log.info(`found: ${video.video_id}`);
-         const { error } = await db
-            .from("yt_videos")
-            .update({ duration: 66 })
-            .eq("video_id", video.video_id);
-         if (error) {
-            Log.error(error);
-            throw error;
-         }
-         continue;
-      }
-      // screen test
-      if (video.video_id === "c7de5239-853f-4f40-8a83-6f2dec753453") {
-         Log.info(`found: ${video.video_id}`);
-         const { error } = await db
-            .from("yt_videos")
-            .update({ duration: 899 })
-            .eq("video_id", video.video_id);
-         if (error) {
-            Log.error(error);
-            throw error;
-         }
-         continue;
-      }
-   }
+   return commentVoteActions;
 };
 
-const main_04 = async () => {
-   const { data, error } = await db.from("yt_channel").select();
-   if (error) {
-      Log.error(error);
-      throw error;
-   }
-
-   const subscriptions = data
+const generateSubscriptions = (
+   channels: Array<Channel>
+): Array<Subscription> => {
+   const subscriptions = channels
       .map((channel) => {
          const subscribers = new Set<string>();
-         const numVoters = Math.round(Math.random() * data.length);
+         const numVoters = Math.round(Math.random() * channels.length);
          while (subscribers.size < numVoters) {
-            const id = data[Math.floor(Math.random() * data.length)]?.id;
+            const id =
+               channels[Math.floor(Math.random() * channels.length)]?.id;
             if (id) {
                subscribers.add(id);
             }
@@ -366,28 +260,165 @@ const main_04 = async () => {
 
          return Array.from(subscribers.values()).map((subscriber) => {
             return {
-               id: uuidv4(),
-               channel_id: channel.id,
-               subscriber_channel_id: subscriber,
-            };
+               channelId: channel.id,
+               subscriberChannelId: subscriber,
+            } satisfies Subscription;
          });
       })
       .flat();
+   return subscriptions;
+};
 
-   const { error: subscriptions_err } = await db
-      .from("yt_subscriptions")
-      .insert(subscriptions);
-   if (subscriptions_err) {
-      Log.error(subscriptions_err);
-      throw subscriptions_err;
-   }
+const generateViews = (
+   videos: Array<Video>,
+   channels: Array<Channel>
+): Array<View> => {
+   const views = videos
+      .map((video) => {
+         const viewers = new Set<string>();
+         const viewCount = Math.round(Math.random() * channels.length);
+         while (viewers.size < viewCount) {
+            const id =
+               channels[Math.floor(Math.random() * channels.length)]?.id;
+            if (id) {
+               viewers.add(id);
+            }
+         }
+         return Array.from(viewers.values()).map((channelId) => {
+            return {
+               channelId: channelId,
+               videoId: video.id,
+               count: Math.floor(Math.random() * 10),
+            } satisfies View;
+         });
+      })
+      .flat();
+   return views;
+};
+
+const generationStage = () => {
+   const { channels, contentCreators } = genChannels(100);
+   const videos = genVideos(contentCreators);
+   const comments = genComments(videos, channels);
+   const videoLikes = genVideoLikes(videos, channels);
+   const commentLikes = genCommentLikes(comments, channels);
+   const subscriptions = generateSubscriptions(channels);
+   const views = generateViews(videos, channels);
+
+   Log.info({
+      channels: {
+         count: channels.length,
+      },
+      videos: {
+         count: videos.length,
+      },
+      comments: {
+         count: comments.length,
+      },
+      videoLikes: {
+         count: videoLikes.length,
+      },
+      commentLikes: {
+         count: commentLikes.length,
+      },
+      subscriptions: {
+         count: subscriptions.length,
+      },
+      views: {
+         count: views.length,
+      },
+   });
+
+   return {
+      channels,
+      videos,
+      subscriptions,
+      comments,
+      videoLikes,
+      commentLikes,
+      views,
+   };
+};
+
+import chunk from "lodash.chunk";
+import { eq } from "drizzle-orm";
+
+const uploadData = async (data: ReturnType<typeof generationStage>) => {
+   db.transaction(async (tx) => {
+      try {
+         await Promise.all(
+            chunk(data.channels, 100).map((chunk) => {
+               return tx.insert(Channels).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.videos, 100).map((chunk) => {
+               return tx.insert(Videos).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.subscriptions, 100).map((chunk) => {
+               return tx.insert(Subscriptions).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.comments, 100).map((chunk) => {
+               return tx.insert(Comments).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.views, 100).map((chunk) => {
+               return tx.insert(Views).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.videoLikes, 100).map((chunk) => {
+               return tx.insert(VideoVotes).values(chunk);
+            })
+         );
+         await Promise.all(
+            chunk(data.commentLikes, 100).map((chunk) => {
+               return tx.insert(CommentVotes).values(chunk);
+            })
+         );
+      } catch (e) {
+         Log.error(e);
+         tx.rollback();
+      }
+   });
+};
+
+const fixVideoUrlPaths = async () => {
+   await Promise.all([
+      db
+         .update(Videos)
+         .set({
+            url: "/assets/videos/e190e9a1-b3f9-4840-8c57-8c7312595e68",
+         })
+         .where(
+            eq(
+               Videos.url,
+               "/assets/thumbnails/e190e9a1-b3f9-4840-8c57-8c7312595e68"
+            )
+         ),
+      db
+         .update(Videos)
+         .set({
+            url: "/assets/videos/c7de5239-853f-4f40-8a83-6f2dec753453",
+         })
+         .where(
+            eq(
+               Videos.url,
+               "/assets/thumbnails/c7de5239-853f-4f40-8a83-6f2dec753453"
+            )
+         ),
+   ]);
 };
 
 async function main() {
-   // await main_01()
-   // await main_02();
-   // await main_03();
-   await main_04();
+   // const data = generationStage();
+   // await uploadData(data);
+   await fixVideoUrlPaths();
 }
 
 main();

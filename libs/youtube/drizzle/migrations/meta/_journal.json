@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1686171844716,
+      "tag": "0000_uneven_famine",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1686172295234,
+      "tag": "0001_remarkable_la_nuit",
+      "breakpoints": false
+    }
+  ]
+}

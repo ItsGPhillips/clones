@@ -14,6 +14,8 @@ import React, { PropsWithChildren, useState } from 'react';
 export * from '@tanstack/react-query';
 export * from '@tanstack/react-query-devtools';
 
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+
 /**
  * Client side wrapper for react queries cache.
  * @param props
@@ -24,7 +26,9 @@ export const ClientReactQueryProvider: React.FC<PropsWithChildren> = (
 ) => {
   const [client] = useState(() => new QueryClient());
   return (
-    <QueryClientProvider client={client}>{props.children}</QueryClientProvider>
+    <QueryClientProvider client={client}>{props.children}
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   );
 };
 

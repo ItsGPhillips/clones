@@ -3,12 +3,8 @@ import { headers as Headers } from "next/headers";
 import { cn } from "@shared/utils/cn";
 import { env } from "@youtube/env";
 import { Header } from "@youtube/components/Header";
-import SupabaseProvider from "@youtube/components/Supabase";
 import { ClientReactQueryProvider } from "@shared/ReactQuery";
-
 import { Roboto } from "next/font/google";
-import { createServerComponentClient } from "@youtube/supabase";
-
 import { SSRProvider } from "@shared/components/SSRProvider";
 
 const roboto = Roboto({
@@ -17,8 +13,8 @@ const roboto = Roboto({
 });
 
 const getContryCode = async (ip: string | null) => {
-   if(ip === null) {
-      return "GB"
+   if (ip === null) {
+      return "GB";
    }
    const res = await fetch(
       `${env.IP_GEOLOCATION_API_URL}?apiKey=${env.IP_GEOLOCATION_API_KEY}&ip=${ip}&fields=country_code2`,
@@ -35,11 +31,6 @@ export default async function RootLayout({
 }: {
    children: React.ReactNode;
 }) {
-   const supabase = createServerComponentClient();
-   const {
-      data: { session },
-   } = await supabase.auth.getSession();
-
    const headers = Headers();
    const contryCode = await getContryCode(headers.get("x-forwarded-for"));
 
@@ -53,14 +44,12 @@ export default async function RootLayout({
             suppressHydrationWarning={true}
          >
             <SSRProvider>
-               <SupabaseProvider session={session}>
-                  <ClientReactQueryProvider>
-                     <Header contryCode={contryCode} />
-                     <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
-                        {children}
-                     </div>
-                  </ClientReactQueryProvider>
-               </SupabaseProvider>
+               <ClientReactQueryProvider>
+                  <Header contryCode={contryCode} />
+                  <div className="flex h-[var(--content-height)] max-w-full grow-0 flex-row">
+                     {children}
+                  </div>
+               </ClientReactQueryProvider>
             </SSRProvider>
          </body>
       </html>

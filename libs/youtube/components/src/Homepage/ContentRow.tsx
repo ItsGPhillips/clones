@@ -1,18 +1,15 @@
 "use client";
 
 import { cn } from "@shared/utils/cn";
-import {
-   PropsWithChildren,
-   useMemo,
-   useRef,
-} from "react";
-import { VideoCardWithSuspense } from "./VideoCard";
+import { PropsWithChildren, useRef } from "react";
+import { VideoCard, VideoCardLoading } from "./VideoCard";
 import useMeasure from "react-use-measure";
 import { useButton } from "@react-aria/button";
 import { DownChevronIcon } from "@youtube/icons/DownChevronIcon";
 import { TooltipContainer } from "@shared/components/Tooltip";
-import { useSupabase } from "../Supabase";
-import { useQuery } from "@tanstack/react-query";
+
+// @ts-ignore
+import { useGetRandomVideosQuery } from "@youtube/shared/hooks/useGetRandomVideosQuery";
 
 type Role = "recommended" | "breaking-news" | "subscriptions" | "movies";
 
@@ -67,33 +64,20 @@ export const ContentRow: React.FC<
       role: Role;
    }>
 > = (props) => {
-   const { supabase } = useSupabase();
    const [ref, bounds] = useMeasure();
+   const { data } = useGetRandomVideosQuery(props.role);
 
-   const { data } = useQuery(
-      ["content", "random_videos", props.role],
-      async () => {
-         const { data, error } = await supabase.rpc("get_random_videos", {
-            param_num_videos: 4,
-         });
-         if (error) throw error;
-         return data;
-      },
-      {
-         cacheTime: Infinity,
-         staleTime: Infinity,
-      }
-   );
+   console.log(data);
 
-   const what = useMemo(() => {
-      return (
-         data?.map((id) => {
-            return (
-               <VideoCardWithSuspense key={id.video_id} videoId={id.video_id} />
-            );
-         }) ?? []
-      );
-   }, [data?.length ?? 0]);
+   const elements = Array(4)
+      .fill(null)
+      .map((_, idx) => {
+         const video = data?.[idx];
+         if (video !== undefined) {
+            return <VideoCard key={video.id} video={video} />;
+         }
+         return <VideoCardLoading key={idx}/>;
+      });
 
    const numVideos = (() => {
       if (bounds.width > 1200) {
@@ -112,7 +96,7 @@ export const ContentRow: React.FC<
       <div className="flex flex-1 flex-col" ref={ref}>
          {mapRoleToLabel(props.role)}
          <div className={cn("flex h-80 justify-center gap-4 text-white")}>
-            {what.slice(0, numVideos)}
+            {elements.slice(0, numVideos)}
          </div>
          <ShowMoreButton />
          <Seperator />

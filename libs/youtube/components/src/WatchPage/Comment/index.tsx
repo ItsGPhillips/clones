@@ -3,17 +3,17 @@ import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { CommentReplies } from "../RepliesButton";
 import { ClientStateProvider } from "./ClientStateProvider";
 import { CommentMenu } from "./Menu";
-import { CommentInfo } from "@youtube/supabase";
+import { CommentWithChannel } from "@youtube/shared/zod/channel";
 
-export const Comment = (props: { comment: CommentInfo }) => {
+export const Comment = (props: { comment: CommentWithChannel }) => {
    return (
       <ClientStateProvider>
          <div className="h-fit w-fit">
-            <Avatar firstName={props.comment.channel_name} imageUrl={null} />
+            <Avatar firstName={props.comment.channel.name} imageUrl={null} />
          </div>
          <div className="flex flex-1 flex-col items-start gap-1 pr-16">
             <span className="text-xs font-bold">
-               {props.comment.channel_name}
+               {props.comment.channel.name}
             </span>
             {props.comment.body.split("\n").map((p) => (
                <p key={p} className="max-w-5xl text-sm">
@@ -30,7 +30,7 @@ export const Comment = (props: { comment: CommentInfo }) => {
             </div>
             <CommentReplies
                commendId={props.comment.id}
-               videoId={props.comment.video_id}
+               videoId={props.comment.videoId}
             />
          </div>
          <CommentMenu />

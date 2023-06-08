@@ -34,6 +34,9 @@ import * as ScrollArea from "@shared/components/ScrollArea";
 import Link from "next/link";
 import { SidebarChannelLink } from "./SidebarChannelLink";
 
+// @ts-ignore
+import { useChannelSubscriptionsQuery } from "@youtube/shared/hooks/useChannelSubscriptionsQuery";
+
 const Seperator = forwardRef<HTMLHRElement, ComponentProps<"hr">>(
    (props, ref) => {
       return (
@@ -56,8 +59,6 @@ const Group: React.FC<PropsWithChildren<{ title?: string }>> = (props) => {
 };
 
 import { YoutubeLogoWithSidebarTrigger } from "./YoutubeLogoSection";
-import { useSupabase } from "../Supabase";
-import { useQuery } from "@tanstack/react-query";
 
 const FOOTER_LINKS = {
    info: [
@@ -82,24 +83,7 @@ export const SidebarContent = (props: {
    includeLogo?: boolean;
    countryCode?: string;
 }) => {
-   const { supabase } = useSupabase();
-   const { data: subscriptions, error } = useQuery(
-      ["subscriptions"],
-      async () => {
-         const { data, error } = await supabase.rpc("get_channel_subscriptions", {
-            param_channel_id: "005599ae-f648-4a3a-91d0-d9450ea2d096"
-         });
-
-         if (error) {
-            throw error;
-         }
-         return data;
-      },
-      {
-         cacheTime: Infinity,
-         refetchOnWindowFocus: false,
-      }
-   );
+   const { data: subscriptions, error } = useChannelSubscriptionsQuery("02e39425-1a05-4dac-8b64-d93e552f7a0f");
 
    if (error) {
       throw error;
@@ -157,12 +141,12 @@ export const SidebarContent = (props: {
                </Group>
                <Seperator />
                <Group title="Subscriptions">
-                  {subscriptions?.slice(0, 14).map(({channel_id, channel_name}) => {
+                  {subscriptions?.slice(0, 14).map(({ channel }) => {
                      return (
                         <SidebarChannelLink
-                           key={channel_id}
-                           channel={channel_name}
-                           id={channel_id}
+                           key={channel.id}
+                           channelName={channel.name}
+                           id={channel.id}
                         />
                      );
                   })}
@@ -249,7 +233,11 @@ export const SidebarContent = (props: {
                   <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.info.map(({ label, href }) => {
                         return (
-                           <Link className="mr-1 text-white/70" href={href} key={label}>
+                           <Link
+                              className="mr-1 text-white/70"
+                              href={href}
+                              key={label}
+                           >
                               {label}
                            </Link>
                         );
@@ -258,7 +246,11 @@ export const SidebarContent = (props: {
                   <div className="mx-4 my-2 flex flex-wrap text-[0.79rem]">
                      {FOOTER_LINKS.terms.map(({ label, href }) => {
                         return (
-                           <Link className="mr-1 text-white/70" href={href} key={label}>
+                           <Link
+                              className="mr-1 text-white/70"
+                              href={href}
+                              key={label}
+                           >
                               {label}
                            </Link>
                         );

@@ -2,12 +2,12 @@ import { Avatar } from "../Avatar";
 import { SideBarButton } from "./SideBarButton";
 
 type SidebarChannelLinkProps = {
-   channel: string;
+   channelName: string;
    id: string;
 };
 
 export const SidebarChannelLink = (props: SidebarChannelLinkProps) => {
-   const channel = props.channel.split(" ");
+   const channel = props.channelName.split(" ");
    return (
       <SideBarButton href={""}>
          <Avatar

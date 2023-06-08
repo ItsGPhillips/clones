@@ -2,16 +2,12 @@
 
 import { Avatar } from "@youtube/components/Avatar";
 import { VideoCardThumbnail } from "./VideoCardThumbnail";
-import { useSupabase } from "../Supabase";
 import Link from "next/link";
-import { useVideoInfo } from "@youtube/shared/hooks/useVideoInfo";
-import { ComponentProps, Suspense } from "react";
 
-// const PREFIX =
-//    "https://boydmgzwehvxxvydovbv.supabase.co/storage/v1/object/public/youtube";
-const PREFIX = "/assets";
+// @ts-ignore
+import { VideoWithChannel } from "@youtube/shared/zod/video";
 
-const Fallback = () => {
+export const VideoCardLoading = () => {
    return (
       <div className="pointer-cursor flex max-w-sm flex-1 animate-pulse flex-col items-center gap-2">
          <div className="!aspect-video w-full overflow-hidden rounded-2xl bg-white/30" />
@@ -27,43 +23,25 @@ const Fallback = () => {
    );
 };
 
-export const VideoCard: React.FC<{ videoId?: string }> = (props) => {
-   const { supabase } = useSupabase();
-   const { data, error } = useVideoInfo(supabase, props.videoId);
-
-   switch(data.thumbnail_path) {
-      case "thumbnails/classic_antique_computers_and_machines": {
-         break
-      }
-      case "thumbnails/text_video.jpg": {
-         break
-      }
-   }
-
-   if (error) {
-      return <>{JSON.stringify(error, null, 2)}</>;
-   }
-
+export const VideoCard: React.FC<{ video: VideoWithChannel }> = (props) => {
    return (
       <Link
-         href={`/watch?v=${props.videoId}`}
+         href={`/watch?v=${props.video.id}`}
          className="pointer-cursor flex max-w-sm flex-1 flex-col items-center gap-2"
       >
          <VideoCardThumbnail
-            duration={data.video_duration}
-            thumbnailUrl={""}
-            // thumbnailUrl={`${PREFIX}/${data.thumbnail_path}`}
-            videoUrl={""}
-            // videoUrl={`${PREFIX}/${data.video_path}`}
+            duration={props.video.duration}
+            thumbnailUrl={`${props.video.thumbnailUrls[0]!}.webp`}
+            videoUrl={`${props.video.url}.webm`}
          />
          <div className="relative flex flex-row gap-2 self-start">
             <Avatar className="self-start" firstName="TEST" imageUrl={null} />
             <div className="flex max-w-[15rem] flex-col">
                <span className="text-md line-clamp-2 mb-1 font-bold">
-                  {data.title}
+                  {props.video.title}
                </span>
                <span className="text-sm font-light text-white/60">
-                  {data.channel_name}
+                  {props.video.channel.name}
                </span>
                <span className="text-sm font-light text-white/60">
                   555k views • 3 months ago
@@ -71,15 +49,5 @@ export const VideoCard: React.FC<{ videoId?: string }> = (props) => {
             </div>
          </div>
       </Link>
-   );
-};
-
-export const VideoCardWithSuspense = (
-   props: ComponentProps<typeof VideoCard>
-) => {
-   return (
-      <Suspense fallback={<Fallback />}>
-         <VideoCard {...props} />
-      </Suspense>
    );
 };

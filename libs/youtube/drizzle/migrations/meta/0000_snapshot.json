@@ -1,0 +1,459 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "id": "129bf5b9-df19-4d21-8672-8ee48c55ea76",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "yt_channel": {
+      "name": "yt_channel",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {}
+    },
+    "yt_comment_vote_action": {
+      "name": "yt_comment_vote_action",
+      "schema": "",
+      "columns": {
+        "comment_id": {
+          "name": "comment_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "yt_vote_action_enum",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_comment_vote_action_comment_id_yt_comments_id_fk": {
+          "name": "yt_comment_vote_action_comment_id_yt_comments_id_fk",
+          "tableFrom": "yt_comment_vote_action",
+          "tableTo": "yt_comments",
+          "columnsFrom": [
+            "comment_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_comment_vote_action_channel_id_yt_channel_id_fk": {
+          "name": "yt_comment_vote_action_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_comment_vote_action",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "yt_comment_vote_action_comment_id_channel_id": {
+          "name": "yt_comment_vote_action_comment_id_channel_id",
+          "columns": [
+            "comment_id",
+            "channel_id"
+          ]
+        }
+      }
+    },
+    "yt_comments": {
+      "name": "yt_comments",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "video_id": {
+          "name": "video_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "parent": {
+          "name": "parent",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "posted_at": {
+          "name": "posted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "body": {
+          "name": "body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_comments_channel_id_yt_channel_id_fk": {
+          "name": "yt_comments_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_comments",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_comments_video_id_yt_video_id_fk": {
+          "name": "yt_comments_video_id_yt_video_id_fk",
+          "tableFrom": "yt_comments",
+          "tableTo": "yt_video",
+          "columnsFrom": [
+            "video_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_comments_parent_yt_channel_id_fk": {
+          "name": "yt_comments_parent_yt_channel_id_fk",
+          "tableFrom": "yt_comments",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "parent"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "yt_subscriptions": {
+      "name": "yt_subscriptions",
+      "schema": "",
+      "columns": {
+        "subscriber_channel_id": {
+          "name": "subscriber_channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_subscriptions_subscriber_channel_id_yt_channel_id_fk": {
+          "name": "yt_subscriptions_subscriber_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_subscriptions",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "subscriber_channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_subscriptions_channel_id_yt_channel_id_fk": {
+          "name": "yt_subscriptions_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_subscriptions",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "yt_subscriptions_subscriber_channel_id_channel_id": {
+          "name": "yt_subscriptions_subscriber_channel_id_channel_id",
+          "columns": [
+            "subscriber_channel_id",
+            "channel_id"
+          ]
+        }
+      }
+    },
+    "yt_video_vote_action": {
+      "name": "yt_video_vote_action",
+      "schema": "",
+      "columns": {
+        "video_id": {
+          "name": "video_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "action": {
+          "name": "action",
+          "type": "yt_vote_action_enum",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_video_vote_action_video_id_yt_video_id_fk": {
+          "name": "yt_video_vote_action_video_id_yt_video_id_fk",
+          "tableFrom": "yt_video_vote_action",
+          "tableTo": "yt_video",
+          "columnsFrom": [
+            "video_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_video_vote_action_channel_id_yt_channel_id_fk": {
+          "name": "yt_video_vote_action_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_video_vote_action",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "yt_video_vote_action_video_id_channel_id": {
+          "name": "yt_video_vote_action_video_id_channel_id",
+          "columns": [
+            "video_id",
+            "channel_id"
+          ]
+        }
+      }
+    },
+    "yt_video": {
+      "name": "yt_video",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uploade_date": {
+          "name": "uploade_date",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "duration": {
+          "name": "duration",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "thumbnail_urls": {
+          "name": "thumbnail_urls",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_video_channel_id_yt_channel_id_fk": {
+          "name": "yt_video_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_video",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {}
+    },
+    "yt_view": {
+      "name": "yt_view",
+      "schema": "",
+      "columns": {
+        "video_id": {
+          "name": "video_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "channel_id": {
+          "name": "channel_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "count": {
+          "name": "count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "yt_view_video_id_yt_video_id_fk": {
+          "name": "yt_view_video_id_yt_video_id_fk",
+          "tableFrom": "yt_view",
+          "tableTo": "yt_video",
+          "columnsFrom": [
+            "video_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "yt_view_channel_id_yt_channel_id_fk": {
+          "name": "yt_view_channel_id_yt_channel_id_fk",
+          "tableFrom": "yt_view",
+          "tableTo": "yt_channel",
+          "columnsFrom": [
+            "channel_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "yt_view_video_id_channel_id": {
+          "name": "yt_view_video_id_channel_id",
+          "columns": [
+            "video_id",
+            "channel_id"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {
+    "yt_vote_action_enum": {
+      "name": "yt_vote_action_enum",
+      "values": {
+        "upvote": "upvote",
+        "downvote": "downvote"
+      }
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

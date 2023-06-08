@@ -1,6 +1,8 @@
 {
    "extends": "../../../tsconfig.base.json",
    "compilerOptions": {
+      "composite": true,
+      "declaration": true,
       "module": "commonjs",
       "forceConsistentCasingInFileNames": true,
       "strict": true,
@@ -10,10 +12,17 @@
       "noFallthroughCasesInSwitch": true
    },
    "files": [],
-   "include": [],
+   "include": [
+      "src/**/*.ts",
+      "../../drizzle/src/*"
+   ],
+   "exclude": ["node_modules"],
    "references": [
       {
          "path": "./tsconfig.lib.json"
+      },
+      {
+         "path": "../drizzle/tsconfig.json"
       }
    ]
 }

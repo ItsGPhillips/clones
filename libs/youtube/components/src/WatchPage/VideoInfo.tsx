@@ -1,9 +1,4 @@
-import {
-   createServerComponentClient,
-   serverGetVideoData,
-} from "@youtube/supabase";
 import { Description } from "./Description";
-import { subWeeks } from "date-fns";
 import { PillButton } from "./PillButton";
 import { LikeIcon } from "@youtube/icons/LikeIcon";
 import { ShareIcon } from "@youtube/icons/ShareIcon";
@@ -13,22 +8,112 @@ import { cn } from "@shared/utils/cn";
 import { EllipsisButton } from "./EllipsisButton";
 import { Avatar } from "@youtube/components/Avatar";
 import { Comment } from "./Comment";
+import { db } from "@youtube/drizzle/instance";
+import { and, eq, sql } from "drizzle-orm";
+import { Subscriptions, VideoVotes, Views } from "@youtube/drizzle/index";
+
+export const getVideoData = async (videoId: string) => {
+   const data = await db.query.Videos.findFirst({
+      where: (videos, { eq }) => eq(videos.id, videoId),
+      with: {
+         channel: true,
+         comments: {
+            where: (comment, { sql }) =>
+               sql`${comment.parent.name}::text IS NULL`,
+            with: {
+               channel: true,
+            },
+         },
+      },
+   });
+   if (!data) {
+      throw "error";
+   }
+   return data;
+};
+
+const getSubscriptionCount = async (channelId: string) => {
+   const [data] = await db
+      .select({
+         count: sql<number>`COUNT(*)`.mapWith(Number),
+      })
+      .from(Subscriptions)
+      .where(eq(Subscriptions.channelId, channelId))
+      .limit(1);
+
+   if (!data) throw new Error();
+   return data.count;
+};
+
+const getVideoLikeCount = async (videoId: string) => {
+   const [downvotes, upvotes] = await Promise.all([
+      db
+         .select({
+            count: sql<number>`COUNT(*)`.mapWith(Number),
+         })
+         .from(VideoVotes)
+         .where(
+            and(
+               eq(VideoVotes.action, "downvote"),
+               eq(VideoVotes.videoId, videoId)
+            )
+         )
+         .limit(1)
+         .then((data) => data[0]),
+      db
+         .select({
+            count: sql<number>`COUNT(*)`.mapWith(Number),
+         })
+         .from(VideoVotes)
+         .where(
+            and(
+               eq(VideoVotes.action, "upvote"),
+               eq(VideoVotes.videoId, videoId)
+            )
+         )
+         .limit(1)
+         .then((data) => data[0]),
+   ]);
+   return (upvotes?.count ?? 0) - (downvotes?.count ?? 0);
+};
+
+const getViewCount = async (videoId: string) => {
+   // select the count column where the video Id is this video.
+   const views = await db
+      .select({ count: Views.count })
+      .from(Views)
+      .where(eq(Views.videoId, videoId));
+
+   // sum up the count values.
+   const viewCount = views.reduce((out, current) => {
+      return out + current.count;
+   }, 0);
+   return viewCount;
+};
 
 export const VideoInfo = async (props: { videoId: string }) => {
-   const videoData = await serverGetVideoData(props.videoId);
+   const [video, videoLikeCount] = await Promise.all([
+      getVideoData(props.videoId),
+      getVideoLikeCount(props.videoId),
+   ]);
+
+   const [subscriptionCount, veiwCount] = await Promise.all([
+      getSubscriptionCount(video.channelId),
+      getViewCount(video.id),
+   ])
 
    return (
       <div className="flex flex-col gap-2">
-         <h2 className="mt-3 text-xl font-bold">{videoData.title}</h2>
+         <h2 className="mt-3 text-xl font-bold">{video.title}</h2>
          <div className="flex h-12">
             <div className="flex items-center gap-2">
-               <Avatar firstName={videoData.channel_name} imageUrl={null} />
+               <Avatar firstName={video.channel.name} imageUrl={null} />
                <div className="flex flex-col">
                   <span className="whitespace-nowrap text-sm font-bold">
-                     {videoData.channel_name}
+                     {video.channel.name}
                   </span>
                   <span className="whitespace-nowrap text-xs text-white/80">
-                     {videoData.subscriber_count} subscribers
+                     {subscriptionCount} subscribers
                   </span>
                </div>
             </div>
@@ -42,7 +127,7 @@ export const VideoInfo = async (props: { videoId: string }) => {
                      <span
                         className={cn("border-r-[1px] border-white/20 pr-2")}
                      >
-                        {videoData.likes ?? "NULL"}
+                        {videoLikeCount ?? "NULL"}
                      </span>
                   </PillButton>
                   <PillButton className="flex rounded-l-none pl-2">
@@ -67,9 +152,9 @@ export const VideoInfo = async (props: { videoId: string }) => {
             </div>
          </div>
          <Description
-            description={videoData.video_description}
-            views={0}
-            uploadDate={new Date(videoData.upload_date)}
+            description={video.description}
+            views={veiwCount}
+            uploadDate={new Date(video.uploadDate)}
             tags={["tag1", "tag2", "tag3"]}
          />
          <a
@@ -78,30 +163,15 @@ export const VideoInfo = async (props: { videoId: string }) => {
          >
             Licence - Creative Commons | Public Domain
          </a>
-         {/* @ts-expect-error */}
-         <CommentSection videoId={props.videoId} />
-      </div>
-   );
-};
-
-const CommentSection = async (props: { videoId: string }) => {
-   console.log(props);
-
-   const supabase = createServerComponentClient();
-   const { data } = await supabase.rpc("get_comment_info", {
-      param_video_id: props.videoId,
-      param_parent_id: "", // HACK: empty string to make Postgres happy
-   });
-
-   return (
-      <div>
-         <h3 className="mb-6 mt-2">{data?.length ?? 0} Comments</h3>
-         <div className="flex flex-col gap-2">
-            {data?.map((comment) => {
-               if (comment.parent === null) {
-                  return <Comment comment={comment} />;
-               }
-            })}
+         <div>
+            <h3 className="mb-6 mt-2">{video.comments.length ?? 0} Comments</h3>
+            <div className="flex flex-col gap-2">
+               {video.comments.map((comment) => {
+                  if (comment.parent === null) {
+                     return <Comment comment={comment} />;
+                  }
+               })}
+            </div>
          </div>
       </div>
    );
