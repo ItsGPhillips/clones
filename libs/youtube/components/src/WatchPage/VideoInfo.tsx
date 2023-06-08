@@ -12,26 +12,9 @@ import { db } from "@youtube/drizzle/instance";
 import { and, eq, sql } from "drizzle-orm";
 import { Subscriptions, VideoVotes, Views } from "@youtube/drizzle/index";
 
-export const getVideoData = async (videoId: string) => {
-   const data = await db.query.Videos.findFirst({
-      where: (videos, { eq }) => eq(videos.id, videoId),
-      with: {
-         channel: true,
-         comments: {
-            where: (comment, { sql }) =>
-               sql`${comment.parent.name}::text IS NULL`,
-            with: {
-               channel: true,
-            },
-         },
-      },
-   });
-   if (!data) {
-      throw "error";
-   }
-   return data;
-};
-
+// @ts-ignore
+import { getVideoData } from "@youtube/shared/server/getVideoData"
+ 
 const getSubscriptionCount = async (channelId: string) => {
    const [data] = await db
       .select({
@@ -165,7 +148,7 @@ export const VideoInfo = async (props: { videoId: string }) => {
          </a>
          <div>
             <h3 className="mb-6 mt-2">{video.comments.length ?? 0} Comments</h3>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
                {video.comments.map((comment) => {
                   if (comment.parent === null) {
                      return <Comment comment={comment} />;

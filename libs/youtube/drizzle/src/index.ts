@@ -88,6 +88,7 @@ export const videosRelation = relations(Videos, ({ one, many }) => ({
       references: [Channels.id],
    }),
    comments: many(Comments),
+   views: many(Views),
 }));
 
 //----------------------------------------------------------------------------
@@ -208,9 +209,9 @@ export const Views = pgTable(
 export const VIEW_TABLE_SCHEMA = createSelectSchema(Views);
 
 export const viewsRelation = relations(Views, ({ one }) => ({
-   video: one(Comments, {
+   video: one(Videos, {
       fields: [Views.videoId],
-      references: [Comments.id],
+      references: [Videos.id],
    }),
    channel: one(Channels, {
       fields: [Views.channelId],

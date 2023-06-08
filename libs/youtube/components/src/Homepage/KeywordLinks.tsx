@@ -5,7 +5,7 @@ import { BsChevronRight } from "react-icons/bs";
 import useMeasure from "react-use-measure";
 import { HoverButton } from "../HoverButton";
 import { faker } from "@faker-js/faker";
-import { CSSProperties, useRef, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useAnimate } from "framer-motion";
 
 const NavigateButton: React.FC<{
@@ -39,18 +39,18 @@ export const KeywordLinks: React.FC = () => {
          .map(() => faker.word.noun())
    );
 
-   const [selectedIndex, setSelectedIndex] = useState(-1);
+   const [selectedIndex, setSelectedIndex] = useState(0);
 
    // position fixed elements are wierd and using JS measurements can make
    // things easier.
    const [ref, bounds] = useMeasure();
 
    const [animateRef, animate] = useAnimate();
-
    return (
       <div
          ref={ref}
-         className="grow-1 relative mb-2 h-8 w-auto shrink-0 md:h-12"
+         className="grow-1 relative mb-2 h-8 w-auto shrink-0 md:h-12 left-0"
+         suppressHydrationWarning
       >
          <div
             className="bg-dark-800 flex flex-nowrap items-start gap-2 opacity-100"

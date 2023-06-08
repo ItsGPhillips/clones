@@ -4,20 +4,37 @@ import Image from "next/image";
 import Link from "next/link";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { db } from "@youtube/drizzle/instance";
+import { Videos, Views } from "@youtube/drizzle/index";
+import { sql, eq } from "drizzle-orm";
 
 export const Recomendations = async () => {
    const data = await db.query.Videos.findMany({
-      limit: 10,
+      limit: 14,
       orderBy: (_videos, { sql }) => sql`RANDOM()`,
       with: {
          channel: true,
+         views: {
+            columns: {
+               count: true,
+            },
+         },
       },
+   });
+
+   const videos = data.map(({ views, ...video }) => {
+      const viewCount = views.reduce((out, current) => {
+         return out + current.count;
+      }, 0);
+      return {
+         ...video,
+         views: viewCount,
+      } as const;
    });
 
    return (
       <div className="flex h-full w-full flex-col gap-3">
-         {/* <KeywordLinks /> */}
-         {data?.map((video) => {
+         <KeywordLinks />
+         {videos.map((video) => {
             return (
                <Link key={video.id} href={`/watch?v=${video.id}`}>
                   <div className="flex h-28 w-full cursor-pointer">
@@ -36,12 +53,13 @@ export const Recomendations = async () => {
                            {video.channel.name}
                         </span>
                         <div className="flex items-center gap-1 text-xs text-white/60">
-                           <span className="">0 views</span>
+                           <span className="">{video.views} views</span>
                            <span className="aspect-square w-1 rounded-full bg-white/20" />
                            <span>
                               {formatDistanceToNowStrict(
                                  new Date(video.uploadDate)
-                              )}
+                              )}{" "}
+                              ago
                            </span>
                         </div>
                      </div>

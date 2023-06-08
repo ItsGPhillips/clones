@@ -4,6 +4,7 @@ import { WatchPageLayout } from "@youtube/components/WatchPage/Layout";
 import { VideoInfo } from "@youtube/components/WatchPage/VideoInfo";
 import { Recomendations } from "@youtube/components/WatchPage/Recommended";
 import { z } from "zod";
+import { getVideoData } from "@youtube/shared/server/getVideoData";
 
 const SEARCH_PARAMS_SCHEMA = z.object({
    v: z.string().uuid(),
@@ -11,23 +12,21 @@ const SEARCH_PARAMS_SCHEMA = z.object({
 
 export default async function WatchPage(props: { searchParams: any }) {
    const params = SEARCH_PARAMS_SCHEMA.parse(props["searchParams"]);
+   const video = await getVideoData(params.v);
 
    return (
       <>
          <Sidebar />
          <WatchPageLayout
-            videoPlayer={
-               // @ts-expect-error
-               <VideoPlayer videoId={params.v} />
-            }
+            videoPlayer={<VideoPlayer videoSrcUrl={video.url} />}
             recomendations={
                // @ts-expect-error
-               <Recomendations videoId={params.v}/>
+               <Recomendations videoId={params.v} />
             }
             videoInfo={
                // @ts-expect-error
-            <VideoInfo videoId={params.v}/>
-         }
+               <VideoInfo videoId={params.v} />
+            }
          />
       </>
    );

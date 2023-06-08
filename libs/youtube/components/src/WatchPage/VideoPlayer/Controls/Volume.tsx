@@ -1,7 +1,7 @@
 "use client";
 
 import { useAnimate, AnimationPlaybackControls } from "framer-motion";
-import { RefObject, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState, useTransition } from "react";
 import {
    BiVolumeFull,
    BiVolumeMute,
@@ -21,7 +21,6 @@ export const VolumeControls: React.FC<{
       <BiVolumeFull fill="white" className="h-6 w-6" />
    );
    const [isMuted, setIsMuted] = useState(false);
-   
    const [volume, setVolume] = useState<number>(
       props.videoRef.current?.volume ?? 0.5
    );
@@ -30,28 +29,19 @@ export const VolumeControls: React.FC<{
       {
          onScroll(e) {
             if (!props.videoRef.current) return;
-            const delta = 1 / e.deltaY;
-            const newVolume = Math.max(
-               Math.min(props.videoRef.current.volume + delta, 1),
-               0
-            );
-            props.videoRef.current.volume = newVolume;
-            console.log(newVolume);
+            const delta = Math.sign(e.deltaY) > 0 ? -0.2 : 0.2;
+            const newVolume = Math.max(Math.min(volume + delta, 1), 0);
+            console.log(Math.sign(e.deltaY), e.deltaY, delta, newVolume);
+            setVolume(newVolume);
          },
       },
       ref
    );
 
-   // useEffect(() => {
-   //    if (!props.videoRef.current) return;
-   //    while (props.videoRef.current.volume !== volume) {
-   //       if (props.videoRef.current.volume > volume) {
-   //          props.videoRef.current.volume -= 0.01;
-   //       } else {
-   //          props.videoRef.current.volume += 0.01;
-   //       }
-   //    }
-   // }, [volume]);
+   useEffect(() => {
+      if (!props.videoRef.current) return;
+      props.videoRef.current.volume = volume;
+   }, [volume]);
 
    const { hoverProps } = useHover({
       onHoverStart() {
@@ -90,12 +80,11 @@ export const VolumeControls: React.FC<{
          </Button>
          <div ref={ref} className="h-full">
             <Slider.Root
-               value={[props.videoRef.current?.volume ?? 0]}
+               value={[volume]}
                onValueChange={(e) => {
                   const last = e[e.length - 1] ?? 0;
                   if (props.videoRef.current) {
-                     props.videoRef.current.volume = last;
-                     // setVolume(last);
+                     setVolume(last);
                   }
 
                   if (last > 0.5) {

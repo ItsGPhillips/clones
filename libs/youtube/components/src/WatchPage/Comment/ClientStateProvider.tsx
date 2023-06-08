@@ -21,7 +21,7 @@ export const ClientStateProvider: React.FC<PropsWithChildren> = (props) => {
       <COMMENT_CONTEXT.Provider value={{ isHovered: isHovered.value }}>
          <div
             ref={ref}
-            className="relative flex w-full items-start justify-start gap-4"
+            className="relative flex w-full items-start justify-start gap-4 mb-2"
             onMouseOver={(e) => {
                e.stopPropagation();
                isHovered.setTrue();
