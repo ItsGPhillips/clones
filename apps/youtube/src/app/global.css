@@ -20,6 +20,7 @@
    --header-height: theme(space.14);
    --content-height: calc(100vh - var(--header-height));
    --homepage-card-max-width: theme(containers.sm);
+   --theater-screen-height: calc(var(--content-height) - 6rem);
 }
 
 *::-webkit-media-controls-panel {

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useAnimate } from "framer-motion";
-import { useCallback, useRef, useState } from "react";
+import { memo, useCallback, useRef, useState } from "react";
 import makeCancellable from "make-cancellable-promise";
 import { usePress } from "@react-aria/interactions";
 import { mergeProps, mergeRefs } from "@react-aria/utils";
@@ -18,7 +18,7 @@ const makeCancelableTimeout = (timeout: number) => {
 
 export const VideoPlayer: React.FC<{
    videoSrcUrl?: string;
-}> = (props) => {
+}> = memo((props) => {
    const containerRef = useRef<HTMLDivElement>(null);
    const ref = useRef<HTMLVideoElement>(null);
    const [showControls, setShowControls] = useState(false);
@@ -93,12 +93,12 @@ export const VideoPlayer: React.FC<{
       <motion.div
          animate={{ outlineWidth: 0 }}
          ref={mergeRefs(containerRef, animateRef)}
-         className="relative w-full overflow-hidden rounded-xl outline outline-black/0"
+         className="relative h-full overflow-hidden rounded-xl outline outline-black/0"
       >
          <video
             ref={ref}
             key={props.videoSrcUrl}
-            className="aspect-video w-full bg-black"
+            className="!aspect-video w-full bg-black"
             {...mergedProps}
          >
             <source
@@ -121,7 +121,7 @@ export const VideoPlayer: React.FC<{
          <PlayPauseMarker key={String(isPlaying)} isPlaying={isPlaying} />
       </motion.div>
    );
-};
+});
 
 const PlayPauseMarker: React.FC<{ isPlaying: boolean }> = (props) => {
    return (

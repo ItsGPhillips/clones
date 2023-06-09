@@ -18,7 +18,7 @@ export default async function WatchPage(props: { searchParams: any }) {
       <>
          <Sidebar />
          <WatchPageLayout
-            videoPlayer={<VideoPlayer videoSrcUrl={video.url} />}
+            videoSrcUrl={video.url}
             recomendations={
                // @ts-expect-error
                <Recomendations videoId={params.v} />

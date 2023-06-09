@@ -1,7 +1,13 @@
 import { motion } from "framer-motion";
 import { RefObject } from "react";
 import { AiOutlineStepForward } from "react-icons/ai";
-import { BiPause, BiPlay, BiCaptions, BiRectangle, BiFullscreen } from "react-icons/bi";
+import {
+   BiPause,
+   BiPlay,
+   BiCaptions,
+   BiRectangle,
+   BiFullscreen,
+} from "react-icons/bi";
 import { GrBackTen, GrForwardTen } from "react-icons/gr";
 import { IoMdSettings } from "react-icons/io";
 import { RiPictureInPictureFill } from "react-icons/ri";
@@ -9,6 +15,7 @@ import { Button } from "./Button";
 import { VolumeControls } from "./Volume";
 import { PlaybackScrubber } from "./Scrubber";
 import { PlaybackMeter } from "./PlaybackMeter";
+import { TheaterModeButton } from "./TheaterMode";
 
 export const Controls: React.FC<{
    videoRef: RefObject<HTMLVideoElement>;
@@ -79,9 +86,7 @@ export const Controls: React.FC<{
             >
                <RiPictureInPictureFill fill="white" className="h-6 w-6" />
             </Button>
-            <Button>
-               <BiRectangle fill="white" className="h-6 w-6" />
-            </Button>
+            <TheaterModeButton />
             <Button
                onPress={() => {
                   props.controls.toggleFullscreen();

@@ -11,6 +11,5 @@ const getRandomVideos = async (limit?: number) => {
    });
 };
 export const GET = async (req: NextRequest) => {
-   const searchParams = req.nextUrl.searchParams;
    return NextResponse.json(await getRandomVideos());
 };

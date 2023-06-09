@@ -4,6 +4,7 @@ import {
    CommentWithChannel,
 } from "../zod/channel";
 import { z } from "zod";
+import { getBaseUrl } from "../getBaseUrl";
 
 export const useCommentQuery = (
    commentId: string
@@ -11,7 +12,7 @@ export const useCommentQuery = (
    return useQuery(
       ["comment", commentId],
       async () => {
-         const res = await fetch(`/api/comments?parent=${commentId}`, {
+         const res = await fetch(`${getBaseUrl()}/api/comments?parent=${commentId}`, {
             method: "GET",
          });
          return z.array(COMMENT_WITH_CHANNEL_SCHEMA).parse(await res.json());
