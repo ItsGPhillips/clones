@@ -21,6 +21,7 @@ export const Controls: React.FC<{
    videoRef: RefObject<HTMLVideoElement>;
    isPlaying: boolean;
    controls: {
+      updateState: () => void;
       setPlayPosition: (delta: number) => void;
       togglePlayback: () => void;
       toggleFullscreen: () => void;
@@ -36,7 +37,7 @@ export const Controls: React.FC<{
             duration: 0.1,
          }}
       >
-         <div className="flex flex-nowrap gap-2">
+         <div className="ml-4 flex flex-nowrap gap-2">
             <Button
                onPress={() => {
                   props.controls.setPlayPosition(-10);
@@ -71,7 +72,7 @@ export const Controls: React.FC<{
             <VolumeControls videoRef={props.videoRef} />
             <PlaybackMeter videoRef={props.videoRef} />
          </div>
-         <div className="ml-auto flex flex-nowrap gap-2">
+         <div className="ml-auto mr-4 flex flex-nowrap gap-2">
             {/* <Button>Auto</Button> */}
             <Button>
                <BiCaptions fill="white" className="h-6 w-6" />
@@ -86,7 +87,7 @@ export const Controls: React.FC<{
             >
                <RiPictureInPictureFill fill="white" className="h-6 w-6" />
             </Button>
-            <TheaterModeButton />
+            <TheaterModeButton updateState={props.controls.updateState} />
             <Button
                onPress={() => {
                   props.controls.toggleFullscreen();

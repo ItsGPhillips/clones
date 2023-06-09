@@ -31,7 +31,6 @@ export const VolumeControls: React.FC<{
             if (!props.videoRef.current) return;
             const delta = Math.sign(e.deltaY) > 0 ? -0.2 : 0.2;
             const newVolume = Math.max(Math.min(volume + delta, 1), 0);
-            console.log(Math.sign(e.deltaY), e.deltaY, delta, newVolume);
             setVolume(newVolume);
          },
       },
