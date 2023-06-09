@@ -68,7 +68,7 @@ export const CommentMenu = () => {
                   },
                }}
                className={cn(
-                  "absolute right-2 top-3 flex cursor-pointer items-center justify-center rounded-full p-2"
+                  "absolute right-2 top-3 flex cursor-pointer items-center justify-center rounded-full p-2 z-[400]"
                )}
                {...(pressProps as any)}
             >

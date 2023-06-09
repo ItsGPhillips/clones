@@ -32,7 +32,7 @@ export const Recomendations = async () => {
    });
 
    return (
-      <div className="flex h-full w-full flex-col gap-3">
+      <div className="flex h-full w-full flex-col gap-3 isolate">
          <KeywordLinks />
          {videos.map((video) => {
             return (

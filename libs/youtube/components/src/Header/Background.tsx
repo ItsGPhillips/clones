@@ -51,7 +51,7 @@ export const SmallScreenBackground: React.FC<PropsWithChildren> = (props) => {
          <AnimatePresence initial={false}>
             {showHeader && (
                <motion.div
-                  className="bg-dark-800 fixed top-0 z-[200] flex w-full flex-col"
+                  className="bg-dark-800 fixed top-0 z-[600] flex w-full flex-col"
                   initial={{ y: "-100%" }}
                   animate={{
                      y: 0,

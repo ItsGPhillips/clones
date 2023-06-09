@@ -15,7 +15,7 @@ const NavigateButton: React.FC<{
    return (
       <div
          className={cn(
-            "gradiant-50 absolute top-0 z-[110] flex h-full w-20 items-center justify-end overflow-visible",
+            "gradiant-50 absolute top-0 z-[110] flex h-full w-20 items-center justify-end overflow-visible isolate",
             {
                "left-0 rotate-180": props.direction === "left",
                "right-0": props.direction === "right",
@@ -32,7 +32,7 @@ const NavigateButton: React.FC<{
    );
 };
 
-export const KeywordLinks: React.FC = () => {
+export const KeywordLinks: React.FC<{fixed?: boolean }> = (props) => {
    const words = useRef<Array<string>>(
       Array(30)
          .fill(null)
@@ -53,8 +53,9 @@ export const KeywordLinks: React.FC = () => {
          suppressHydrationWarning
       >
          <div
-            className="bg-dark-800 flex flex-nowrap items-start gap-2 opacity-100"
+            className="bg-dark-800 flex flex-nowrap items-start gap-2 opacity-100 z-[400]"
             style={{
+               position: props.fixed ? "fixed" : "relative",
                width: bounds.width,
                height: bounds.height,
             }}
