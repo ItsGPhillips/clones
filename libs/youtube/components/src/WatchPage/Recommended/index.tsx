@@ -4,8 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import formatDistanceToNowStrict from "date-fns/formatDistanceToNowStrict";
 import { db } from "@youtube/drizzle/instance";
-import { Videos, Views } from "@youtube/drizzle/index";
-import { sql, eq } from "drizzle-orm";
 
 export const Recomendations = async () => {
    const data = await db.query.Videos.findMany({
